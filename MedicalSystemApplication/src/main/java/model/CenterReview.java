@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Data
 @Entity
-public class CentreReview {
+public class CenterReview {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,12 +23,12 @@ public class CentreReview {
     @ManyToOne(fetch = FetchType.EAGER)
     private Patient patient;
 
-    public CentreReview(){
+    public CenterReview(){
 
     }
 
         
-    public CentreReview(int rating, Date date, Patient patient) {
+    public CenterReview(int rating, Date date, Patient patient) {
 		super();
 		this.rating = rating;
 		this.date = date;

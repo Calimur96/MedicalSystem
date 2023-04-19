@@ -37,7 +37,7 @@ public class AppointmentController {
     private UserService userService;
 
     @Autowired
-    private CentreService centreService;
+    private CenterService centerService;
 
     @Autowired
     private NotificationService notificationService;
@@ -155,7 +155,7 @@ public class AppointmentController {
         return new ResponseEntity<>(new AppointmentDTO(appointmentReq), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/centre/getAllRequests/{centreName}")
+    @GetMapping(value = "/center/getAllRequests/{centreName}")
     @ApiOperation("Получение всех запросов на приемы")
     public ResponseEntity<AppointmentDTO[]> getAllAppointmentRequests(@PathVariable("centreName") String centre) {
         log.info("Receiving all requests for appointments at the medical center '{}'.", centre);
@@ -174,17 +174,17 @@ public class AppointmentController {
         return new ResponseEntity<>(dtos.toArray(new AppointmentDTO[dtos.size()]), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/centre/getAllAppointments/{centreName}")
+    @GetMapping(value = "/center/getAllAppointments/{centreName}")
     @ApiOperation("Получение всех назначений центров")
     public ResponseEntity<List<AppointmentDTO>> getAppointmentsCentre(@PathVariable("centreName") String centreName) {
         log.info("Receipt of all appointments in the medical center '{}'.", centreName);
-        Centre centre = centreService.findByName(centreName);
+        Center center = centerService.findByName(centreName);
 
-        if (centre == null) {
+        if (center == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        List<Appointment> list = appointmentService.findAllByCentre(centre);
+        List<Appointment> list = appointmentService.findAllByCentre(center);
 
         if (list == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -199,19 +199,19 @@ public class AppointmentController {
         return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/centre/getAllAppointmentsToday/{centreName}")
+    @GetMapping(value = "/center/getAllAppointmentsToday/{centreName}")
     @ApiOperation("Получение всех сегодняшних назначений центров")
     public ResponseEntity<List<AppointmentDTO>> getAppointmentsCentreToday(@PathVariable("centreName") String centreName) {
         log.info("Receiving all appointments for today at the medical center '{}'.", centreName);
         Date today = new Date();
 
-        Centre centre = centreService.findByName(centreName);
+        Center center = centerService.findByName(centreName);
 
-        if (centre == null) {
+        if (center == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        List<Appointment> list = appointmentService.findAllByCentre(centre);
+        List<Appointment> list = appointmentService.findAllByCentre(center);
 
         if (list == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -229,7 +229,7 @@ public class AppointmentController {
     }
 
 
-    @GetMapping(value = "/centre/getAllAppointmentsWeek/{centreName}")
+    @GetMapping(value = "/center/getAllAppointmentsWeek/{centreName}")
     @ApiOperation("Еженедельное получение всех назначений центров")
     public ResponseEntity<List<AppointmentDTO>> getAppointmentsCentreWeekly(@PathVariable("centreName") String centreName) {
         log.info("Weekly receipt of all appointments to the medical center '{}'.", centreName);
@@ -244,13 +244,13 @@ public class AppointmentController {
         cal.add(Calendar.WEEK_OF_YEAR, 1);
         Date weekEnd = cal.getTime();
 
-        Centre centre = centreService.findByName(centreName);
+        Center center = centerService.findByName(centreName);
 
-        if (centre == null) {
+        if (center == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        List<Appointment> list = appointmentService.findAllByCentre(centre);
+        List<Appointment> list = appointmentService.findAllByCentre(center);
 
         if (list == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -267,7 +267,7 @@ public class AppointmentController {
         return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/centre/getAllAppointmentsMonth/{centreName}")
+    @GetMapping(value = "/center/getAllAppointmentsMonth/{centreName}")
     @ApiOperation("Месячное получение всех назначений центров")
     public ResponseEntity<List<AppointmentDTO>> getAppointmentsCentreMonth(@PathVariable("centreName") String centreName) {
         log.info("Monthly receipt of all appointments to the medical center '{}'.", centreName);
@@ -282,13 +282,13 @@ public class AppointmentController {
         cal.add(Calendar.MONTH, 1);
         Date monthEnd = cal.getTime();
 
-        Centre centre = centreService.findByName(centreName);
+        Center center = centerService.findByName(centreName);
 
-        if (centre == null) {
+        if (center == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        List<Appointment> list = appointmentService.findAllByCentre(centre);
+        List<Appointment> list = appointmentService.findAllByCentre(center);
 
         if (list == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -309,19 +309,19 @@ public class AppointmentController {
     @ApiOperation("Получение всех записей по аптекам")
     public ResponseEntity<List<AppointmentDTO>> getAllByHall(@PathVariable("centreName") String centreName, @PathVariable("hallNumber") int hallNumber) {
         log.info("Getting all pharmacy records for '{}', '{}'.", centreName, hallNumber);
-        Centre centre = centreService.findByName(centreName);
+        Center center = centerService.findByName(centreName);
 
-        if (centre == null) {
+        if (center == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        Hall hall = hallService.findByNumberAndCentre(hallNumber, centre);
+        Hall hall = hallService.findByNumberAndCentre(hallNumber, center);
 
         if (hall == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        List<Appointment> apps = appointmentService.findAllByHallAndCentre(hall, centre);
+        List<Appointment> apps = appointmentService.findAllByHallAndCentre(hall, center);
         List<AppointmentDTO> dtos = new ArrayList<AppointmentDTO>();
 
         for (Appointment app : apps) {
@@ -527,10 +527,10 @@ public class AppointmentController {
     public ResponseEntity<Void> makePredefined(@RequestBody AppointmentDTO dto) {
         log.info("Creating tasks in the medical center '{}'.", dto.getCentreName());
         HttpHeaders header = new HttpHeaders();
-        Centre centre = centreService.findByName(dto.getCentreName());
+        Center center = centerService.findByName(dto.getCentreName());
 
-        if (centre == null) {
-            header.set("responseText", "Centre " + dto.getCentreName() + " is not found");
+        if (center == null) {
+            header.set("responseText", "Center " + dto.getCentreName() + " is not found");
             return new ResponseEntity<>(header, HttpStatus.NOT_FOUND);
         }
 
@@ -545,7 +545,7 @@ public class AppointmentController {
         Date date = DateUtil.getInstance().getDate(dto.getDate(), "yyyy-MM-dd HH:mm");
         Date endDate = DateUtil.getInstance().getDate(dto.getEndDate(), "yyyy-MM-dd HH:mm");
 
-        Hall hall = hallService.findByNumberAndCentre(dto.getHallNumber(), centre);
+        Hall hall = hallService.findByNumberAndCentre(dto.getHallNumber(), center);
 
         if (hall == null) {
             header.set("responseText", "Hall " + dto.getHallNumber() + " is not found");
@@ -553,7 +553,7 @@ public class AppointmentController {
             return new ResponseEntity<>(header, HttpStatus.NOT_FOUND);
         }
 
-        List<Appointment> appointments = appointmentService.findAllByHallAndCentre(hall, centre);
+        List<Appointment> appointments = appointmentService.findAllByHallAndCentre(hall, center);
 
         for (Appointment app : appointments) {
             DateInterval d1 = new DateInterval(app.getDate(), app.getEndDate());
@@ -587,7 +587,7 @@ public class AppointmentController {
             doctors.add(d);
         }
 
-        Appointment a = appointmentService.findAppointment(date, hall, centre);
+        Appointment a = appointmentService.findAppointment(date, hall, center);
 
         if (a != null) {
             return new ResponseEntity<>(HttpStatus.ALREADY_REPORTED);
@@ -595,7 +595,7 @@ public class AppointmentController {
 
         Appointment app = new Appointment.Builder(date)
                 .withEndingDate(endDate)
-                .withCentre(centre)
+                .withCentre(center)
                 .withHall(hall)
                 .withType(dto.getType())
                 .withPriceslist(p)
@@ -626,7 +626,7 @@ public class AppointmentController {
             return new ResponseEntity<>(header, HttpStatus.NOT_FOUND);
         }
 
-        Hall hall = hallService.findByNumberAndCentre(dto.getHallNumber(), request.getCentre());
+        Hall hall = hallService.findByNumberAndCentre(dto.getHallNumber(), request.getCenter());
 
         if (hall == null) {
             header.set("responseText", "Hall not found " + dto.getHallNumber());
@@ -653,7 +653,7 @@ public class AppointmentController {
         }
 
         Appointment appointment = new Appointment.Builder(desiredStartTime)
-                .withCentre(request.getCentre())
+                .withCentre(request.getCenter())
                 .withHall(hall)
                 .withPatient(request.getPatient())
                 .withType(request.getAppointmentType())
@@ -670,34 +670,34 @@ public class AppointmentController {
 
             if (appointment.getAppointmentType() == Appointment.AppointmentType.Examination) {
                 for (Doctor doctor : doctors) {
-                    notificationService.sendNotification(doctor.getEmail(), "A new reception is scheduled", "A new reception is scheduled in your work calendar.\nThe date of the reception is " + desiredStartTime + ", in the centre  " + appointment.getCentre().getName() + ", in the hall " + appointment.getHall().getName() + ", number " + appointment.getHall().getNumber() + ".");
+                    notificationService.sendNotification(doctor.getEmail(), "A new reception is scheduled", "A new reception is scheduled in your work calendar.\nThe date of the reception is " + desiredStartTime + ", in the center  " + appointment.getCenter().getName() + ", in the hall " + appointment.getHall().getName() + ", number " + appointment.getHall().getNumber() + ".");
 
                 }
 
                 if (!dat.equals("undefined")) {
-                    notificationService.sendNotification(request.getPatient().getEmail(), "Your reception is scheduled.", "Request for examination accepted.\nThe date of the reception is " + dto.getDate() + ", in the centre  " + appointment.getCentre().getName() + ", in the hall " + appointment.getHall().getName() + ", number " + appointment.getHall().getNumber() + ".");
+                    notificationService.sendNotification(request.getPatient().getEmail(), "Your reception is scheduled.", "Request for examination accepted.\nThe date of the reception is " + dto.getDate() + ", in the center  " + appointment.getCenter().getName() + ", in the hall " + appointment.getHall().getName() + ", number " + appointment.getHall().getNumber() + ".");
                 } else {
-                    notificationService.sendNotification(request.getPatient().getEmail(), "Reception date changed.", "The date of the reception, which was scheduled " + dto.getDate() + ", it has been changed to " + dto.getNewDate() + ". The reception is scheduled in the centre  " + appointment.getCentre().getName() + ", in the hall " + appointment.getHall().getName() + ", number " + appointment.getHall().getNumber() + ".");
+                    notificationService.sendNotification(request.getPatient().getEmail(), "Reception date changed.", "The date of the reception, which was scheduled " + dto.getDate() + ", it has been changed to " + dto.getNewDate() + ". The reception is scheduled in the center  " + appointment.getCenter().getName() + ", in the hall " + appointment.getHall().getName() + ", number " + appointment.getHall().getNumber() + ".");
                 }
 
             }
 
             String requestURL = httpRequest.getRequestURL().toString();
             UriComponentsBuilder builderRootAccept = UriComponentsBuilder.fromUriString(requestURL.split("api")[0])
-                    .queryParam("centre", appointment.getCentre().getName())
+                    .queryParam("center", appointment.getCenter().getName())
                     .queryParam("date", DateUtil.getInstance().getString(appointment.getDate(), "yyyy-MM-dd HH:mm"))
                     .queryParam("hall", appointment.getHall().getNumber())
                     .queryParam("confirmed", true);
 
             UriComponentsBuilder builderRootDeny = UriComponentsBuilder.fromUriString(requestURL.split("api")[0])
-                    .queryParam("centre", appointment.getCentre().getName())
+                    .queryParam("center", appointment.getCenter().getName())
                     .queryParam("date", DateUtil.getInstance().getString(appointment.getDate(), "yyyy-MM-dd HH:mm"))
                     .queryParam("hall", appointment.getHall().getNumber())
                     .queryParam("confirmed", false);
 
-            notificationService.sendNotification("prerecover07@gmail.com", "Confirm preview", "The centre administrator has approved your request for examination.\nConfirm by going to the link:" + builderRootAccept.toUriString() + " Refuse by going to the link:" + builderRootDeny.toUriString());
+            notificationService.sendNotification("prerecover07@gmail.com", "Confirm preview", "The center administrator has approved your request for examination.\nConfirm by going to the link:" + builderRootAccept.toUriString() + " Refuse by going to the link:" + builderRootDeny.toUriString());
 
-            notificationService.sendNotification(appointment.getDoctors().get(0).getEmail(), "Admin has booked an appointment to review", "Admin booked a date review " + DateUtil.getInstance().getString(appointment.getDate(), "yyyy-MM-dd HH:mm") + ", in the centre " + appointment.getCentre().getName() + ", in Room № " + appointment.getHall().getNumber() + " and he choose you as a doctor.");
+            notificationService.sendNotification(appointment.getDoctors().get(0).getEmail(), "Admin has booked an appointment to review", "Admin booked a date review " + DateUtil.getInstance().getString(appointment.getDate(), "yyyy-MM-dd HH:mm") + ", in the center " + appointment.getCenter().getName() + ", in Room № " + appointment.getHall().getNumber() + " and he choose you as a doctor.");
 
         } catch (ConcurrentModificationException e) {
             header.set("responseText", "conflict");
@@ -762,7 +762,7 @@ public class AppointmentController {
         }
 
         //Send mail
-        notificationService.sendNotification(dto.getPatientEmail(), "Your request for examination has been denied", "Your request for review(" + request.getPriceslist().getTypeOfExamination() + ") date " + dto.getDate() + " was rejected by the centre administrator.");
+        notificationService.sendNotification(dto.getPatientEmail(), "Your request for examination has been denied", "Your request for review(" + request.getPriceslist().getTypeOfExamination() + ") date " + dto.getDate() + " was rejected by the center administrator.");
         appointmentRequestService.delete(request);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -774,7 +774,7 @@ public class AppointmentController {
         HttpHeaders header = new HttpHeaders();
         AppointmentRequest request = new AppointmentRequest();
         request.setTimestamp(DateUtil.getInstance().getDate(new Date().getTime(), "yyyy-MM-dd HH:mm"));
-        Centre centre = centreService.findByName(dto.getCentreName());
+        Center center = centerService.findByName(dto.getCentreName());
 
         AppointmentRequest databaseRequest = appointmentRequestService.findAppointmentRequest(dto.getDate(), dto.getHallNumber(), dto.getCentreName());
 
@@ -782,12 +782,12 @@ public class AppointmentController {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
 
-        if (centre == null) {
+        if (center == null) {
             log.info("CENTRE='{}' was not found.", dto.getCentreName());
-            header.set("message", "Centre not found: " + dto.getCentreName());
+            header.set("message", "Center not found: " + dto.getCentreName());
             return new ResponseEntity<>(header, HttpStatus.NOT_FOUND);
         }
-        request.setCentre(centre);
+        request.setCenter(center);
 
         Patient patient = patientService.findByEmail(dto.getPatientEmail());
 
@@ -815,7 +815,7 @@ public class AppointmentController {
             request.getDoctors().add(doctor);
         }
 
-        Hall hall = hallService.findByNumberAndCentre(dto.getHallNumber(), centre);
+        Hall hall = hallService.findByNumberAndCentre(dto.getHallNumber(), center);
 
         if (hall == null) {
             log.info("HALL='{}' was not found.", dto.getHallNumber());
@@ -824,7 +824,7 @@ public class AppointmentController {
         }
         request.setHall(hall);
 
-        Priceslist pl = priceslistService.findByTypeOfExaminationAndCentre(dto.getTypeOfExamination(), centre);
+        Priceslist pl = priceslistService.findByTypeOfExaminationAndCentre(dto.getTypeOfExamination(), center);
 
         if (pl == null) {
             System.out.println("PRICELIST");
@@ -837,9 +837,9 @@ public class AppointmentController {
         List<User> admins = userService.getAll(UserRole.CentreAdmin);
 
         for (User user : admins) {
-            CentreAdmin admin = (CentreAdmin) user;
+            CenterAdmin admin = (CenterAdmin) user;
 
-            if (admin.getCentre().getName().equals(centre.getName())) {
+            if (admin.getCenter().getName().equals(center.getName())) {
                 notificationService.sendNotification(admin.getEmail(), "New review request.", "You have a new examination request..");
             }
         }
@@ -879,9 +879,9 @@ public class AppointmentController {
 
         if (role == UserRole.Patient) {
             for (User user : admins) {
-                CentreAdmin admin = (CentreAdmin) user;
+                CenterAdmin admin = (CenterAdmin) user;
 
-                if (admin.getCentre().getName().equals(dto.getCentreName())) {
+                if (admin.getCenter().getName().equals(dto.getCentreName())) {
 
                     notificationService.sendNotification(admin.getEmail(), "The patient cancelled the examination.", "Request for review scheduled for " + dto.getDate() + " is canceled by the patient: " + p.getEmail());
                 }
@@ -890,11 +890,11 @@ public class AppointmentController {
             notificationService.sendNotification(p.getEmail(), "Your examination request has been cancelled.", "Request for review scheduled for " + dto.getDate() + "has been cancelled at your request.");
         } else {
             for (User user : admins) {
-                CentreAdmin admin = (CentreAdmin) user;
+                CenterAdmin admin = (CenterAdmin) user;
 
-                if (admin.getCentre().getName().equals(dto.getCentreName())) {
+                if (admin.getCenter().getName().equals(dto.getCentreName())) {
 
-                    notificationService.sendNotification(admin.getEmail(), "Review cancelled.", "Request for review scheduled for " + dto.getDate() + " was canceled by the centre administrator.");
+                    notificationService.sendNotification(admin.getEmail(), "Review cancelled.", "Request for review scheduled for " + dto.getDate() + " was canceled by the center administrator.");
                 }
             }
 
@@ -946,8 +946,8 @@ public class AppointmentController {
             strBuilder.append(app.getPriceslist().getTypeOfExamination());
             strBuilder.append(") for date ");
             strBuilder.append(app.getDate());
-            strBuilder.append(" the centre ");
-            strBuilder.append(app.getCentre().getName());
+            strBuilder.append(" the center ");
+            strBuilder.append(app.getCenter().getName());
             strBuilder.append(" in Room № ");
             strBuilder.append(app.getHall().getNumber());
             strBuilder.append(". Your doctor is ");

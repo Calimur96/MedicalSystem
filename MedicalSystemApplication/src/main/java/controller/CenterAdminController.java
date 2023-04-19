@@ -1,93 +1,93 @@
 package controller;
 
 
-import dto.CentreDTO;
+import dto.CenterDTO;
 import dto.UserDTO;
 import helpers.SecurePasswordHasher;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import model.Centre;
-import model.CentreAdmin;
+import model.Center;
+import model.CenterAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import service.AppointmentService;
-import service.CentreAdminService;
-import service.CentreService;
+import service.CenterAdminService;
+import service.CenterService;
 import service.UserService;
 
 import java.util.ArrayList;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/api/admins/centre")
+@RequestMapping(value = "/api/admins/center")
 @CrossOrigin
 @Api
-public class CentreAdminController {
+public class CenterAdminController {
 
     @Autowired
     private UserService userService;
 
     @Autowired
-    private CentreService centreService;
+    private CenterService centerService;
 
     @Autowired
     private AppointmentService appointmentService;
 
     @Autowired
-    private CentreAdminService centreAdminService;
+    private CenterAdminService centerAdminService;
 
 
     @GetMapping(value = "/getCentreFromAdmin/{email}")
     @ApiOperation("Создание администраторов для центров")
-    public ResponseEntity<CentreDTO> getCentreFromAdmin(@PathVariable("email") String email) {
+    public ResponseEntity<CenterDTO> getCentreFromAdmin(@PathVariable("email") String email) {
         log.info("Creating an administrator for the center with the email '{}'.", email);
-        CentreAdmin ca = centreAdminService.findByEmail(email);
+        CenterAdmin ca = centerAdminService.findByEmail(email);
         if (ca == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        CentreDTO dto = new CentreDTO(ca.getCentre());
-        return new ResponseEntity<CentreDTO>(dto, HttpStatus.OK);
+        CenterDTO dto = new CenterDTO(ca.getCenter());
+        return new ResponseEntity<CenterDTO>(dto, HttpStatus.OK);
     }
 
     @PostMapping(value = "/registerCentreAdmin/{centreName}")
     @ApiOperation("Поиск центров по Администраторам")
     public ResponseEntity<Void> registerCentreAdmin(@RequestBody UserDTO dto, @PathVariable("centreName") String centreName) {
         log.info("Search centers by admin with email '{}'.", centreName);
-        CentreAdmin ca = centreAdminService.findByEmail(dto.getEmail());
+        CenterAdmin ca = centerAdminService.findByEmail(dto.getEmail());
 
-        Centre centre = centreService.findByName(centreName);
+        Center center = centerService.findByName(centreName);
         HttpHeaders header = new HttpHeaders();
 
-        if (centre == null) {
-            header.set("Response", "Centre not found");
+        if (center == null) {
+            header.set("Response", "Center not found");
             return new ResponseEntity<>(header, HttpStatus.NOT_FOUND);
         }
 
         if (ca == null) {
-            CentreAdmin centreAdmin = new CentreAdmin();
-            centreAdmin.setUsername(dto.getUsername());
-            centreAdmin.setFirstname(dto.getFirstname());
-            centreAdmin.setCity(dto.getCity());
-            centreAdmin.setLastname(dto.getLastname());
-            centreAdmin.setState(dto.getState());
-            centreAdmin.setPhone(dto.getPhone());
-            centreAdmin.setDate_of_birth(dto.getDate_of_birth());
-            centreAdmin.setEmail(dto.getEmail());
-            centreAdmin.setVacationRequests(new ArrayList<>());
-            centreAdmin.setAppointmentRequests(new ArrayList<>());
-            centreAdmin.setCentre(centre);
+            CenterAdmin centerAdmin = new CenterAdmin();
+            centerAdmin.setUsername(dto.getUsername());
+            centerAdmin.setFirstname(dto.getFirstname());
+            centerAdmin.setCity(dto.getCity());
+            centerAdmin.setLastname(dto.getLastname());
+            centerAdmin.setState(dto.getState());
+            centerAdmin.setPhone(dto.getPhone());
+            centerAdmin.setDate_of_birth(dto.getDate_of_birth());
+            centerAdmin.setEmail(dto.getEmail());
+            centerAdmin.setVacationRequests(new ArrayList<>());
+            centerAdmin.setAppointmentRequests(new ArrayList<>());
+            centerAdmin.setCenter(center);
             String token = "admin1234";
 
             try {
                 String hash = SecurePasswordHasher.getInstance().encode(token);
-                centreAdmin.setPassword(hash);
-                centreAdminService.save(centreAdmin);
-                centreAdmin.setCentre(centre);
+                centerAdmin.setPassword(hash);
+                centerAdminService.save(centerAdmin);
+                centerAdmin.setCenter(center);
                 return new ResponseEntity<>(HttpStatus.OK);
             } catch (Exception e) {
                 e.printStackTrace();

@@ -10,7 +10,7 @@ import java.util.List;
 
 @Data
 @Entity
-public class Centre
+public class Center
 {
 
     @Id
@@ -45,15 +45,15 @@ public class Centre
 
 	@OneToMany(cascade = CascadeType.ALL)
 	@LazyCollection(LazyCollectionOption.FALSE)
-    private List<CentreReview> reviews;
+    private List<CenterReview> reviews;
 
-    public Centre()
+    public Center()
     {
     	super();
       
     }
 
-    public Centre(Long id, String name, String address, String city, String state, String description)
+    public Center(Long id, String name, String address, String city, String state, String description)
     { 	
     	super();
 		this.id = id;
@@ -64,10 +64,10 @@ public class Centre
 	    this.description = description;
 	    this.halls = new ArrayList<Hall>();
 	    this.doctors = new ArrayList<Doctor>();
-	    this.reviews = new ArrayList<CentreReview>();
+	    this.reviews = new ArrayList<CenterReview>();
     }
 
-    public Centre(Centre centre) {
+    public Center(Center center) {
     }
     
     
@@ -144,17 +144,17 @@ public class Centre
     	this.doctors = doctors;
     }
     
-    public List<CentreReview> getReviews() {
+    public List<CenterReview> getReviews() {
     	return reviews;
     }
     
-    public void setReviews(List<CentreReview> reviews) {
+    public void setReviews(List<CenterReview> reviews) {
     	this.reviews = reviews;
     }
 
 	public float calculateRating() {
 		// TODO Auto-generated method stub
-		List<CentreReview> reviews = getReviews();
+		List<CenterReview> reviews = getReviews();
 		List<Integer> ratings = new ArrayList<Integer>();
 		float sum = 0;
 		
@@ -163,7 +163,7 @@ public class Centre
 			return -1;
 		}
 		
-		for(CentreReview cr : reviews)
+		for(CenterReview cr : reviews)
 		{
 			if(cr.getRating() >= 0)
 			{

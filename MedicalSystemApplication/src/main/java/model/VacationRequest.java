@@ -34,7 +34,7 @@ public class VacationRequest
 	private User user;
     
     @ManyToOne(fetch = FetchType.EAGER)
-    private Centre centre;
+    private Center center;
     
     @Version
     private int version;
@@ -45,11 +45,11 @@ public class VacationRequest
 	}
 	
 
-	public VacationRequest(Date startDate, Date endDate, Centre centre, User vacationUser) {
+	public VacationRequest(Date startDate, Date endDate, Center center, User vacationUser) {
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.user = vacationUser;
-		this.centre = centre;
+		this.center = center;
 	}
 
 	
@@ -63,13 +63,13 @@ public class VacationRequest
 	}
 
 
-	public Centre getCentre() {
-		return centre;
+	public Center getCenter() {
+		return center;
 	}
 
 
-	public void setCentre(Centre centre) {
-		this.centre = centre;
+	public void setCenter(Center center) {
+		this.center = center;
 	}
 
 

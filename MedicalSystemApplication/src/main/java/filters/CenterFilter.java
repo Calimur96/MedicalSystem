@@ -1,16 +1,16 @@
 package filters;
 
-import dto.CentreFilterDTO;
-import model.Centre;
+import dto.CenterFilterDTO;
+import model.Center;
 
-public class CentreFilter implements Filter {
+public class CenterFilter implements Filter {
 
 
     @Override
     public Boolean test(Object o1, Object o2) {
         try {
-            Centre c = (Centre) o1;
-            CentreFilterDTO d = (CentreFilterDTO) o2;
+            Center c = (Center) o1;
+            CenterFilterDTO d = (CenterFilterDTO) o2;
 
             Boolean flag = true;
 

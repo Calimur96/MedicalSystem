@@ -27,7 +27,7 @@ public class UserController {
     private UserService userService;
 
     @Autowired
-    private CentreService centreService;
+    private CenterService centerService;
 
     @Autowired
     private DiagnosisService diagnosisService;
@@ -51,7 +51,7 @@ public class UserController {
     private NurseService nurseService;
 
     @Autowired
-    private CentreAdminService centreAdminService;
+    private CenterAdminService centerAdminService;
 
     @Autowired
     private MedicalRecordService medicalRecordService;
@@ -148,15 +148,15 @@ public class UserController {
 
     @GetMapping(value = "/getCentreAdmin/{email}")
     @ApiOperation("Получение данных администраторов центров")
-    public ResponseEntity<CentreAdminDTO> getCentreAdmin(@PathVariable("email") String email) {
+    public ResponseEntity<CenterAdminDTO> getCentreAdmin(@PathVariable("email") String email) {
         log.info("Getting data of Center Administrator by email '{}'.", email);
-        CentreAdmin centreAdmin = centreAdminService.findByEmail(email);
+        CenterAdmin centerAdmin = centerAdminService.findByEmail(email);
 
-        if (centreAdmin == null || centreAdmin.getDeleted()) {
+        if (centerAdmin == null || centerAdmin.getDeleted()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        return new ResponseEntity<>(new CentreAdminDTO(centreAdmin), HttpStatus.OK);
+        return new ResponseEntity<>(new CenterAdminDTO(centerAdmin), HttpStatus.OK);
     }
 
     @GetMapping(value = "/getUser/{email}")

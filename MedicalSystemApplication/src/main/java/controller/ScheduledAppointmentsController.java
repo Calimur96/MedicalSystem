@@ -11,8 +11,6 @@ import model.AppointmentRequest;
 import model.Doctor;
 import model.Hall;
 import org.hibernate.Hibernate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -111,7 +109,7 @@ public class ScheduledAppointmentsController {
             d.add(doctor);
 
             Appointment appointment = new Appointment.Builder(start)
-                    .withCentre(request.getCentre())
+                    .withCentre(request.getCenter())
                     .withHall(hall)
                     .withPatient(request.getPatient())
                     .withType(request.getAppointmentType())
@@ -152,7 +150,7 @@ public class ScheduledAppointmentsController {
             }
         }
 
-        doctors = doctorService.findAllByCentreAndType(request.getCentre(), request.getPriceslist().getTypeOfExamination());
+        doctors = doctorService.findAllByCentreAndType(request.getCenter(), request.getPriceslist().getTypeOfExamination());
 
         for (Doctor d : doctors) {
             if (d.IsFreeOn(start) && checkAppointments(d, start, end)) {
@@ -181,7 +179,7 @@ public class ScheduledAppointmentsController {
 
     @Transactional
     public Hall findAvailableHall(AppointmentRequest request, Date start, Date end) {
-        List<Hall> halls = hallService.findAllByCentre(request.getCentre());
+        List<Hall> halls = hallService.findAllByCentre(request.getCenter());
         for (Hall hall : halls) {
             List<Appointment> apps = appointmentService.findAllByHall(hall);
             List<DateInterval> intervals = Scheduler.getFreeIntervals(apps, start);

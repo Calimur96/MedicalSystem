@@ -13,10 +13,10 @@ import java.util.List;
 
 @Data
 @Entity
-public class CentreAdmin extends User {
+public class CenterAdmin extends User {
 
     @ManyToOne(fetch = FetchType.EAGER)
-    private Centre centre;
+    private Center center;
 
 	@OneToMany()
 	@LazyCollection(LazyCollectionOption.FALSE)
@@ -26,21 +26,21 @@ public class CentreAdmin extends User {
 	@LazyCollection(LazyCollectionOption.FALSE)
     private  List<VacationRequest> vacationRequests;
 
-    public CentreAdmin(){
+    public CenterAdmin(){
         super();
         setRole(UserRole.CentreAdmin);
     	this.setIsFirstLog(true);
     }
 
-    public CentreAdmin(String username, String password, String email, String firstname, String lastname, String city,  String state, String date_of_birth, String phone, Centre centre) {
+    public CenterAdmin(String username, String password, String email, String firstname, String lastname, String city, String state, String date_of_birth, String phone, Center center) {
         super(username, password, email, firstname, lastname, city, state, date_of_birth, phone, UserRole.CentreAdmin);
-        this.centre = centre;
+        this.center = center;
         this.appointmentRequests = new ArrayList<>();
         this.vacationRequests = new ArrayList<>();
         this.setIsFirstLog(true);
     }
 
-    public CentreAdmin(User user)
+    public CenterAdmin(User user)
     {
     	super(user);
     	this.appointmentRequests = new ArrayList<>();
@@ -48,12 +48,12 @@ public class CentreAdmin extends User {
         this.setIsFirstLog(true);
     }
 
-    public Centre getCentre() {
-        return centre;
+    public Center getCenter() {
+        return center;
     }
 
-    public void setCentre(Centre centre) {
-        this.centre = centre;
+    public void setCenter(Center center) {
+        this.center = center;
     }
 
     public List<AppointmentRequest> getAppointmentRequests() {
@@ -74,7 +74,7 @@ public class CentreAdmin extends User {
     
     public static class Builder extends UserBuilder
     {
-    	public Centre centre;
+    	public Center center;
 
 		protected Builder(String email) {
 			super(email);
@@ -136,19 +136,19 @@ public class CentreAdmin extends User {
 			return this;
 		}
 		
-		public Builder withCentre(Centre centre)
+		public Builder withCentre(Center center)
 		{
-			this.centre = centre;
+			this.center = center;
 			
 			return this;
 		}
 		
-		public CentreAdmin build()
+		public CenterAdmin build()
 		{
 			super.withRole(UserRole.CentreAdmin);
 			User user = super.build();
-			CentreAdmin a = new CentreAdmin(user);
-			a.setCentre(this.centre);
+			CenterAdmin a = new CenterAdmin(user);
+			a.setCenter(this.center);
 			return a;
 		}
     }

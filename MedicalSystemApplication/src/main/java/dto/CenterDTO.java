@@ -1,8 +1,8 @@
 package dto;
 
-import model.Centre;
+import model.Center;
 
-public class CentreDTO {
+public class CenterDTO {
 
     private String name;
     private String address;
@@ -11,12 +11,12 @@ public class CentreDTO {
     private String description;
     private float rating;
 
-    public CentreDTO()
+    public CenterDTO()
     {
     	super();
     }
     
-    public CentreDTO(String name, String address, String city, String state, String description, float rating) {
+    public CenterDTO(String name, String address, String city, String state, String description, float rating) {
         this.name = name;
         this.address = address;
         this.city = city;
@@ -25,15 +25,15 @@ public class CentreDTO {
         this.rating = rating;
     }
     
-    public CentreDTO(Centre centre)
+    public CenterDTO(Center center)
     {
-    	this.name = centre.getName();
-        this.address = centre.getAddress();
-        this.city = centre.getCity();
-        this.state = centre.getState();
-        this.description = centre.getDescription();
+    	this.name = center.getName();
+        this.address = center.getAddress();
+        this.city = center.getCity();
+        this.state = center.getState();
+        this.description = center.getDescription();
         
-        this.rating = centre.calculateRating();
+        this.rating = center.calculateRating();
     }
 
     public String getName() {

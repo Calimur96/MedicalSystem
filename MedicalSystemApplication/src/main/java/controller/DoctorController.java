@@ -1,6 +1,6 @@
 package controller;
 
-import dto.CentreDTO;
+import dto.CenterDTO;
 import dto.DateIntervalDTO;
 import dto.DoctorDTO;
 import dto.ReviewDTO;
@@ -37,7 +37,7 @@ public class DoctorController {
     private AppointmentService appointmentService;
 
     @Autowired
-    private CentreService centreService;
+    private CenterService centerService;
 
     @Autowired
     private NotificationService notificationService;
@@ -53,7 +53,7 @@ public class DoctorController {
     public ResponseEntity<Void> addNewDoctor(@RequestBody DoctorDTO dto) {
         log.info("Adding a new doctor to the center '{}'.", dto.getCentreName());
         Doctor d = doctorService.findByEmail(dto.getUser().getEmail());
-        Centre c = centreService.findByName(dto.getCentreName());
+        Center c = centerService.findByName(dto.getCentreName());
 
         if (d != null) {
             return new ResponseEntity<>(HttpStatus.ALREADY_REPORTED);
@@ -72,11 +72,11 @@ public class DoctorController {
 
         Doctor doctor = new Doctor(dto);
         doctor.setPassword(pass);
-        doctor.setCentre(c);
+        doctor.setCenter(c);
         doctorService.save(doctor);
 
         c.getDoctors().add(doctor);
-        centreService.save(c);
+        centerService.save(c);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -107,9 +107,9 @@ public class DoctorController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping(value = "/getCentre/{doctorEmail}")
+    @GetMapping(value = "/getCenter/{doctorEmail}")
     @ApiOperation("Получение центров по работающим в них докторам")
-    public ResponseEntity<CentreDTO> getCentreByDoctor(@PathVariable("doctorEmail") String email) {
+    public ResponseEntity<CenterDTO> getCentreByDoctor(@PathVariable("doctorEmail") String email) {
         log.info("Receiving centers by doctors working in them by email '{}'.", email);
         Doctor d = doctorService.findByEmail(email);
 
@@ -117,8 +117,8 @@ public class DoctorController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        Centre c = centreService.findByDoctor(d);
-        CentreDTO dto = new CentreDTO(c);
+        Center c = centerService.findByDoctor(d);
+        CenterDTO dto = new CenterDTO(c);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 

@@ -56,7 +56,7 @@ public class AppointmentDTO {
 			this.endDate = DateUtil.getInstance().getString(appointment.getEndDate(), "yyyy-MM-dd HH:mm");
 		if(appointment.getPatient() != null)
 			this.patientEmail = appointment.getPatient().getEmail();
-		this.centreName = appointment.getCentre().getName();
+		this.centreName = appointment.getCenter().getName();
 		this.hallNumber = appointment.getHall().getNumber();
 		this.doctors = new ArrayList<String>();
 		for(Doctor doc : appointment.getDoctors())
@@ -85,7 +85,7 @@ public class AppointmentDTO {
 		this.date = DateUtil.getInstance().getString(appointment.getDate(),"yyyy-MM-dd HH:mm");
 		this.startTimestamp = DateUtil.getInstance().getString(appointment.getTimestamp(), "yyyy-MM-dd HH:mm");
 		this.patientEmail = appointment.getPatient().getEmail();
-		this.centreName = appointment.getCentre().getName();
+		this.centreName = appointment.getCenter().getName();
 		if(appointment.getHall() != null)
 			this.hallNumber = appointment.getHall().getNumber();
 		this.doctors = new ArrayList<String>();

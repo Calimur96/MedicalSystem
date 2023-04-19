@@ -27,7 +27,7 @@ public class VacationController {
     private UserService userService;
 
     @Autowired
-    private CentreService centreService;
+    private CenterService centerService;
 
     @Autowired
     private VacationRequestService vacationRequestService;
@@ -103,21 +103,21 @@ public class VacationController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        Centre centre = null;
+        Center center = null;
 
         if (user instanceof Doctor) {
             Doctor doctor = (Doctor) user;
-            centre = doctor.getCentre();
+            center = doctor.getCenter();
         } else if (user instanceof Nurse) {
             Nurse nurse = (Nurse) user;
-            centre = nurse.getCentre();
+            center = nurse.getCenter();
         }
 
         VacationRequest vr = new VacationRequest();
 
         vr.setStartDate(DateUtil.getInstance().getDate(vdto.getStartDate(), "dd-MM-yyyy"));
         vr.setEndDate(DateUtil.getInstance().getDate(vdto.getEndDate(), "dd-MM-yyyy"));
-        vr.setCentre(centre);
+        vr.setCenter(center);
         vr.setUser(user);
 
         vacationRequestService.save(vr);
@@ -128,7 +128,7 @@ public class VacationController {
     @ApiOperation("Получение всевозможных запросов на отпуски тех или иных медработников")
     public ResponseEntity<List<VacationDTO>> getAllVacationRequestsByCentre(@PathVariable("centreName") String centreName) {
         log.info("Receiving all kinds of vacation requests for medical workers of the center '{}'.", centreName);
-        Centre c = centreService.findByName(centreName);
+        Center c = centerService.findByName(centreName);
 
         if (c == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

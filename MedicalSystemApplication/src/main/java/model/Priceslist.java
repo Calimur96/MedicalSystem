@@ -16,7 +16,7 @@ public class Priceslist {
 
 	@ManyToOne()
 	@LazyCollection(LazyCollectionOption.FALSE)
-	private Centre centre;
+	private Center center;
 
 	@Column(name = "typeOfExamination", nullable = false)
 	private String typeOfExamination;
@@ -33,9 +33,9 @@ public class Priceslist {
 		this.deleted = false;
 		// TODO Auto-generated constructor stub
 	}
-	public Priceslist(Centre centre, String typeOfExamination, float price) {
+	public Priceslist(Center center, String typeOfExamination, float price) {
 		super();
-		this.centre = centre;
+		this.center = center;
 		this.typeOfExamination = typeOfExamination;
 		this.price = price;
 		this.deleted = false;
@@ -54,11 +54,11 @@ public class Priceslist {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public Centre getCentre() {
-		return centre;
+	public Center getCenter() {
+		return center;
 	}
-	public void setCentre(Centre centre) {
-		this.centre = centre;
+	public void setCenter(Center center) {
+		this.center = center;
 	}
 	public String getTypeOfExamination() {
 		return typeOfExamination;

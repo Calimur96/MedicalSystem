@@ -10,7 +10,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import model.Appointment;
-import model.Centre;
+import model.Center;
 import model.Doctor;
 import model.Hall;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -125,19 +125,19 @@ public class UtilityController {
     private AppointmentService apService;
 
     @Autowired
-    private CentreService centreService;
+    private CenterService centerService;
 
     @GetMapping(value = "/hall/getBusyTime/{hallNumber}/{date}/{centreName}")
     @ApiOperation("Получение времени загруженности аптек")
     public ResponseEntity<List<DateIntervalDTO>> getBusyHall(@PathVariable("hallNumber") int num, @PathVariable("date") String date, @PathVariable("centreName") String centreName) {
         log.info("Getting the workload of pharmacies '{}' in '{}'.", num, centreName);
-        Centre centre = centreService.findByName(centreName);
+        Center center = centerService.findByName(centreName);
 
-        if (centre == null) {
+        if (center == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        Hall hall = hallService.findByNumberAndCentre(num, centre);
+        Hall hall = hallService.findByNumberAndCentre(num, center);
 
         List<Appointment> apps = apService.findAllByHall(hall);
 

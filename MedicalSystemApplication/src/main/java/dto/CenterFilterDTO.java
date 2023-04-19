@@ -1,6 +1,6 @@
 package dto;
 
-public class CentreFilterDTO {
+public class CenterFilterDTO {
 
 	private String name;
     private String address;
@@ -10,12 +10,12 @@ public class CentreFilterDTO {
     
     
   
-	public CentreFilterDTO() {
+	public CenterFilterDTO() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public CentreFilterDTO(String name, String address, String city, String state, float rating) {
+	public CenterFilterDTO(String name, String address, String city, String state, float rating) {
 		super();
 		this.name = name;
 		this.address = address;

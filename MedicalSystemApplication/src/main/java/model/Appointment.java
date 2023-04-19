@@ -34,7 +34,7 @@ public class Appointment {
 
     @OneToOne
     @JoinColumn(name = "centre_id")
-    private Centre centre;
+    private Center center;
 
     @Column(name = "duration", nullable = true)
     private long duration;
@@ -71,13 +71,13 @@ public class Appointment {
         // TODO Auto-generated constructor stub
     }
 
-    public Appointment(Date date, Hall hall, Patient patient, Centre centre, long duration,
+    public Appointment(Date date, Hall hall, Patient patient, Center center, long duration,
                        Priceslist priceslist, AppointmentType appointmentType) {
         super();
         this.date = date;
         this.hall = hall;
         this.patient = patient;
-        this.centre = centre;
+        this.center = center;
         this.duration = duration;
         this.doctors = new ArrayList<>();
         this.priceslist = priceslist;
@@ -169,12 +169,12 @@ public class Appointment {
         this.patient = patient;
     }
 
-    public Centre getCentre() {
-        return centre;
+    public Center getCenter() {
+        return center;
     }
 
-    public void setCentre(Centre centre) {
-        this.centre = centre;
+    public void setCenter(Center center) {
+        this.center = center;
     }
 
     public long getDuration() {
@@ -222,7 +222,7 @@ public class Appointment {
         private Date endDate;
         private Hall hall;
         private Patient patient;
-        private Centre centre;
+        private Center center;
         private Priceslist priceslist;
         private List<Doctor> doctors;
         private AppointmentType appointmentType;
@@ -243,8 +243,8 @@ public class Appointment {
             return this;
         }
 
-        public Builder withCentre(Centre centre) {
-            this.centre = centre;
+        public Builder withCentre(Center center) {
+            this.center = center;
             return this;
         }
 
@@ -277,7 +277,7 @@ public class Appointment {
             Appointment app = new Appointment();
             app.setDate(this.date);
             app.setPatient(this.patient);
-            app.setCentre(this.centre);
+            app.setCenter(this.center);
             app.setHall(this.hall);
             app.setDoctors(this.doctors);
             app.setPricelist(priceslist);

@@ -27,7 +27,7 @@ public class PatientMedicalReportController {
     private UserService userService;
 
     @Autowired
-    private CentreService centreService;
+    private CenterService centerService;
 
     @Autowired
     private DiagnosisService diagnosisService;
@@ -150,9 +150,9 @@ public class PatientMedicalReportController {
             return new ResponseEntity<>(header, HttpStatus.NOT_FOUND);
         }
 
-        Centre centre = centreService.findByName(dto.getCentreName());
-        if (centre == null) {
-            header.set("responseText", "centre not found: " + dto.getCentreName());
+        Center center = centerService.findByName(dto.getCentreName());
+        if (center == null) {
+            header.set("responseText", "center not found: " + dto.getCentreName());
             return new ResponseEntity<>(header, HttpStatus.NOT_FOUND);
         }
 
@@ -173,7 +173,7 @@ public class PatientMedicalReportController {
         prescriptionService.save(pr);
 
         PatientMedicalReport report = new PatientMedicalReport();
-        report.setCentre(centre);
+        report.setCenter(center);
         report.setDescription(dto.getDescription());
         report.setDoctor(doctor);
         report.setPrescription(pr);

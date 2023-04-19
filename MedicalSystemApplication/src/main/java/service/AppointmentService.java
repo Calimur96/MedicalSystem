@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import repository.AppointmentRepository;
-import repository.CentreRepository;
+import repository.CenterRepository;
 import repository.HallRepository;
 import repository.UserRepository;
 
@@ -32,20 +32,20 @@ public class AppointmentService {
     private HallRepository hallRepository;
 
     @Autowired
-    private CentreRepository centreRepository;
+    private CenterRepository centerRepository;
 
     @Autowired
     private UserRepository userRepository;
 
-    public Appointment findAppointment(Date date, Hall hall, Centre centre)
+    public Appointment findAppointment(Date date, Hall hall, Center center)
     {
 
-        return appointmentRepository.findByDateAndHallAndCentre(date, hall, centre);
+        return appointmentRepository.findByDateAndHallAndCenter(date, hall, center);
     }
 
-    public List<Appointment> findAllByHallAndCentre(Hall hall, Centre centre)
+    public List<Appointment> findAllByHallAndCentre(Hall hall, Center center)
     {
-        return appointmentRepository.findAllByHallAndCentre(hall,centre);
+        return appointmentRepository.findAllByHallAndCenter(hall, center);
     }
 
     public List<Appointment> findAll()
@@ -67,9 +67,9 @@ public class AppointmentService {
     {
         Date d = DateUtil.getInstance().getDate(date, "yyyy-MM-dd HH:mm");
 
-        Centre c = centreRepository.findByName(centre);
+        Center c = centerRepository.findByName(centre);
 
-        Hall h = hallRepository.findByNumberAndCentreAndDeleted(hallNumber, c, false);
+        Hall h = hallRepository.findByNumberAndCenterAndDeleted(hallNumber, c, false);
 
         return findAppointment(d,h,c);
     }
@@ -87,7 +87,7 @@ public class AppointmentService {
     @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRES_NEW, readOnly = false)
     public void saveLock(Appointment appointment) throws ObjectOptimisticLockingFailureException
     {
-        Appointment app = appointmentRepository.findByDateAndHallAndCentre(appointment.getDate(), appointment.getHall(), appointment.getCentre());
+        Appointment app = appointmentRepository.findByDateAndHallAndCenter(appointment.getDate(), appointment.getHall(), appointment.getCenter());
 
         if(app != null)
         {
@@ -143,7 +143,7 @@ public class AppointmentService {
             }
         }
 
-        Appointment app = appointmentRepository.findByDateAndHallAndCentre(appointment.getDate(), appointment.getHall(), appointment.getCentre());
+        Appointment app = appointmentRepository.findByDateAndHallAndCenter(appointment.getDate(), appointment.getHall(), appointment.getCenter());
 
         if(app != null)
         {
@@ -175,7 +175,7 @@ public class AppointmentService {
 
     public List<Appointment> findAllByDoctorAndPatient(Doctor d,Patient p)
     {
-        List<Appointment> apps = appointmentRepository.findAllByCentre(d.getCentre());
+        List<Appointment> apps = appointmentRepository.findAllByCenter(d.getCenter());
         List<Appointment> ret = new ArrayList<Appointment>();
         for(Appointment app : apps)
         {
@@ -205,7 +205,7 @@ public class AppointmentService {
 
     public List<Appointment> findAllByDoctor(Doctor d)
     {
-        List<Appointment> apps = appointmentRepository.findAllByCentre(d.getCentre());
+        List<Appointment> apps = appointmentRepository.findAllByCenter(d.getCenter());
         List<Appointment> ret = new ArrayList<Appointment>();
         for(Appointment app : apps)
         {
@@ -233,9 +233,9 @@ public class AppointmentService {
         return appointmentRepository.findAllByDate(date);
     }
 
-    public List<Appointment> findAllByCentre(Centre c)
+    public List<Appointment> findAllByCentre(Center c)
     {
-        return appointmentRepository.findAllByCentre(c);
+        return appointmentRepository.findAllByCenter(c);
     }
 
 

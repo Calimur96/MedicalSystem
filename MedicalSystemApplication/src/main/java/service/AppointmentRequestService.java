@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import repository.AppointmentRequestRepository;
-import repository.CentreRepository;
+import repository.CenterRepository;
 import repository.HallRepository;
 import repository.UserRepository;
 
@@ -28,7 +28,7 @@ public class AppointmentRequestService {
     private HallRepository hallRepository;
 
     @Autowired
-    private CentreRepository centreRepository;
+    private CenterRepository centerRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -38,20 +38,20 @@ public class AppointmentRequestService {
     }
 
     public List<AppointmentRequest> getAllByCentre(String centre) {
-        Centre c = centreRepository.findByName(centre);
-        return appointmentRequestRepository.findAllByCentre(c);
+        Center c = centerRepository.findByName(centre);
+        return appointmentRequestRepository.findAllByCenter(c);
     }
 
     public List<AppointmentRequest> getAllByPatient(Patient p) {
         return appointmentRequestRepository.findAllByPatient(p);
     }
 
-    public AppointmentRequest findAppointmentRequest(Date date, Patient patient, Centre centre) {
-        return appointmentRequestRepository.findByDateAndPatientAndCentre(date, patient, centre);
+    public AppointmentRequest findAppointmentRequest(Date date, Patient patient, Center center) {
+        return appointmentRequestRepository.findByDateAndPatientAndCenter(date, patient, center);
     }
 
-    public AppointmentRequest findAppointmentRequest(Date date, Hall hall, Centre centre) {
-        return appointmentRequestRepository.findByDateAndHallAndCentre(date, hall, centre);
+    public AppointmentRequest findAppointmentRequest(Date date, Hall hall, Center center) {
+        return appointmentRequestRepository.findByDateAndHallAndCenter(date, hall, center);
     }
 
     public AppointmentRequest findAppointmentRequest(String date, String patientEmail, String centre) {
@@ -60,7 +60,7 @@ public class AppointmentRequestService {
         try {
             Date d = df.parse(date);
             Patient p = (Patient) userRepository.findByEmailAndDeleted(patientEmail, false);
-            Centre c = centreRepository.findByName(centre);
+            Center c = centerRepository.findByName(centre);
             return findAppointmentRequest(d, p, c);
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -75,8 +75,8 @@ public class AppointmentRequestService {
 
         try {
             Date d = df.parse(date);
-            Centre c = centreRepository.findByName(centre);
-            Hall h = hallRepository.findByNumberAndCentreAndDeleted(hallNumber, c, false);
+            Center c = centerRepository.findByName(centre);
+            Hall h = hallRepository.findByNumberAndCenterAndDeleted(hallNumber, c, false);
             return findAppointmentRequest(d, h, c);
         } catch (ParseException e) {
             // TODO Auto-generated catch block
@@ -96,7 +96,7 @@ public class AppointmentRequestService {
 
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
     public void saveLock(AppointmentRequest request) throws ConcurrentModificationException {
-        AppointmentRequest req = findAppointmentRequest(request.getDate(), request.getHall(), request.getCentre());
+        AppointmentRequest req = findAppointmentRequest(request.getDate(), request.getHall(), request.getCenter());
 
         if (req != null) {
             throw new ConcurrentModificationException("Already made");

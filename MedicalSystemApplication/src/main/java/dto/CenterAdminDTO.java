@@ -1,25 +1,25 @@
 package dto;
-import model.CentreAdmin;
+import model.CenterAdmin;
 import model.User;
 
-public class CentreAdminDTO {
+public class CenterAdminDTO {
 
     private UserDTO user;
     private String centreName;
 
 
-    public CentreAdminDTO()
+    public CenterAdminDTO()
     {
         super();
     }
 
-    public CentreAdminDTO(UserDTO user, String centreName) {
+    public CenterAdminDTO(UserDTO user, String centreName) {
         super();
         this.user = user;
         this.centreName = centreName;
     }
 
-    public CentreAdminDTO(CentreAdmin ca) {
+    public CenterAdminDTO(CenterAdmin ca) {
         UserDTO dto = new UserDTO();
         dto.setUsername(ca.getUsername());
         dto.setFirstname(ca.getFirstname());
@@ -32,8 +32,8 @@ public class CentreAdminDTO {
         dto.setRole(User.UserRole.CentreAdmin);
         this.user = dto;
 
-        if (ca.getCentre() != null) {
-            this.centreName = ca.getCentre().getName();
+        if (ca.getCenter() != null) {
+            this.centreName = ca.getCenter().getName();
         } else {
             this.centreName = "N/A";
         }

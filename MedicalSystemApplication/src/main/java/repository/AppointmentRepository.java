@@ -9,9 +9,9 @@ import java.util.List;
 
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
 
-    public Appointment findByDateAndHallAndCentre(Date date, Hall hall, Centre centre);
+    public Appointment findByDateAndHallAndCenter(Date date, Hall hall, Center center);
 
-    public List<Appointment> findAllByHallAndCentre(Hall hall, Centre centre);
+    public List<Appointment> findAllByHallAndCenter(Hall hall, Center center);
 
     public List<Appointment> findAllByPatient(Patient p);
 
@@ -20,7 +20,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
     public List<Appointment> findAllByHall(Hall hall);
 
-    public List<Appointment> findAllByCentre(Centre c);
+    public List<Appointment> findAllByCenter(Center c);
 
     public List<Appointment> findAllByPredefined(Boolean predefined);
 

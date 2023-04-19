@@ -1,6 +1,6 @@
 package service;
 
-import model.Centre;
+import model.Center;
 import model.Hall;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,8 +14,8 @@ public class HallService {
     @Autowired
     private HallRepository hallRepository;
 
-    public Hall findByNumberAndCentre(int number, Centre centre) {
-        return hallRepository.findByNumberAndCentreAndDeleted(number, centre, false);
+    public Hall findByNumberAndCentre(int number, Center center) {
+        return hallRepository.findByNumberAndCenterAndDeleted(number, center, false);
     }
 
     public void save(Hall hall) {
@@ -30,7 +30,7 @@ public class HallService {
         return hallRepository.findAll();
     }
 
-    public List<Hall> findAllByCentre(Centre c) {
-        return hallRepository.findByCentre(c);
+    public List<Hall> findAllByCentre(Center c) {
+        return hallRepository.findByCenter(c);
     }
 }

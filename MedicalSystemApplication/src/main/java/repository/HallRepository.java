@@ -1,6 +1,6 @@
 package repository;
 
-import model.Centre;
+import model.Center;
 import model.Hall;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface HallRepository extends JpaRepository<Hall, Long> {
 
-    public Hall findByNumberAndCentreAndDeleted(int number, Centre centre, Boolean deleted);
+    public Hall findByNumberAndCenterAndDeleted(int number, Center center, Boolean deleted);
 
-    public List<Hall> findByCentre(Centre c);
+    public List<Hall> findByCenter(Center c);
 }

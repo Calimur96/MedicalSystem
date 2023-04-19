@@ -1,7 +1,6 @@
 package dto;
 
 import helpers.DateUtil;
-import model.Doctor;
 import model.Nurse;
 import model.User;
 
@@ -41,9 +40,9 @@ public class NurseDTO {
 		dto.setRole(User.UserRole.Nurse);
 		this.user = dto;
 
-		if(n.getCentre() != null)
+		if(n.getCenter() != null)
 		{
-			this.centreName = n.getCentre().getName();
+			this.centreName = n.getCenter().getName();
 		}
 		else
 		{

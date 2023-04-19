@@ -1,10 +1,10 @@
 package service;
 
-import model.Centre;
+import model.Center;
 import model.Priceslist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import repository.CentreRepository;
+import repository.CenterRepository;
 import repository.PriceListRepository;
 
 import java.util.List;
@@ -15,20 +15,20 @@ public class PriceListService {
     @Autowired
     private PriceListRepository priceListRepository;
     @Autowired
-    private CentreRepository centreRepository;
+    private CenterRepository centerRepository;
 
     public Priceslist findByTypeOfExaminationAndCentre(String typeOfExamination, String centreName) {
 
-        Centre centre = centreRepository.findByName(centreName);
-        return priceListRepository.findByTypeOfExaminationAndCentreAndDeleted(typeOfExamination, centre, false);
+        Center center = centerRepository.findByName(centreName);
+        return priceListRepository.findByTypeOfExaminationAndCenterAndDeleted(typeOfExamination, center, false);
     }
 
-    public Priceslist findByTypeOfExaminationAndCentre(String typeOfExamination, Centre centre) {
-        return priceListRepository.findByTypeOfExaminationAndCentreAndDeleted(typeOfExamination, centre, false);
+    public Priceslist findByTypeOfExaminationAndCentre(String typeOfExamination, Center center) {
+        return priceListRepository.findByTypeOfExaminationAndCenterAndDeleted(typeOfExamination, center, false);
     }
 
-    public List<Priceslist> findAllByCentre(Centre c) {
-        return priceListRepository.findAllByCentre(c);
+    public List<Priceslist> findAllByCentre(Center c) {
+        return priceListRepository.findAllByCenter(c);
     }
 
     public List<Priceslist> findAllByPrice(Long price) {

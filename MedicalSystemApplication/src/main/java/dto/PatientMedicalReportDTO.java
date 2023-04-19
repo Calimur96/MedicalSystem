@@ -48,7 +48,7 @@ public class PatientMedicalReportDTO {
 		}
 		this.description = report.getDescription();
 		this.dateAndTime = report.getDateAndTime();
-		this.centreName = report.getCentre().getName();
+		this.centreName = report.getCenter().getName();
 		this.doctorEmail = report.getDoctor().getEmail();
 		this.prescription = dto;
 		this.diagnosis = new ArrayList<>();

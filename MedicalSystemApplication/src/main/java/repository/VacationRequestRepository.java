@@ -1,6 +1,6 @@
 package repository;
 
-import model.Centre;
+import model.Center;
 import model.User;
 import model.VacationRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,7 +11,7 @@ public interface VacationRequestRepository extends JpaRepository<VacationRequest
 
     public List<VacationRequest> findAllByUser(User user);
 
-    public List<VacationRequest> findAllByCentre(Centre centre);
+    public List<VacationRequest> findAllByCenter(Center center);
 
 
 }

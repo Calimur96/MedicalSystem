@@ -1,6 +1,5 @@
 package model;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -31,7 +30,7 @@ public class Doctor extends User
 
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.EAGER)
-	private Centre centre;
+	private Center center;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<ReviewDoctor> reviews;
@@ -141,7 +140,7 @@ public class Doctor extends User
 		private String type;
 		private Date shiftStart;
 		private Date shiftEnd;
-		public Centre centre;
+		public Center center;
 
 
 		protected Builder(String email) {
@@ -228,9 +227,9 @@ public class Doctor extends User
 			return this;
 		}
 
-		public Builder withCentre(Centre centre)
+		public Builder withCentre(Center center)
 		{
-			this.centre = centre;
+			this.center = center;
 
 			return this;
 		}
@@ -244,7 +243,7 @@ public class Doctor extends User
 			d.setType(this.type);
 			d.setShiftStart(this.shiftStart);
 			d.setShiftEnd(this.shiftEnd);
-			d.setCentre(this.centre);
+			d.setCenter(this.center);
 			return d;
 		}
 	}

@@ -8,7 +8,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import model.Appointment;
-import model.Centre;
+import model.Center;
 import model.Hall;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -16,7 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import service.AppointmentService;
-import service.CentreService;
+import service.CenterService;
 import service.HallService;
 
 import java.util.ArrayList;
@@ -37,13 +37,13 @@ public class HallController {
     private AppointmentService appointmentService;
 
     @Autowired
-    private CentreService centreService;
+    private CenterService centerService;
 
     @GetMapping(value = "/getHallBusyDays/{centreName}/{hallNumber}")
     @ApiOperation("Получение максимально-загруженных дней в аптеках")
     public ResponseEntity<List<Date>> getHallBusyFromHallAndCentre(@PathVariable("centreName") String centreName, @PathVariable("hallNumber") int hallNumber) {
         log.info("Getting the maximum-loaded days in the pharmacy '{}' medical center'{}'.", hallNumber, centreName);
-        Centre c = centreService.findByName(centreName);
+        Center c = centerService.findByName(centreName);
         List<Date> busyHall = new ArrayList<Date>();
 
         if (c == null) {
@@ -92,10 +92,10 @@ public class HallController {
     public ResponseEntity<HallDTO[]> getHallsFilter(@RequestBody HallDTO dto) {
         log.info("Search all pharmacies using the filter ('{}', '{}').", dto.getCentreName(), dto.getNumber());
         HttpHeaders header = new HttpHeaders();
-        Centre c = centreService.findByName(dto.getCentreName());
+        Center c = centerService.findByName(dto.getCentreName());
 
         if (c == null) {
-            header.set("responseText", "centre");
+            header.set("responseText", "center");
             return new ResponseEntity<>(header, HttpStatus.NOT_FOUND);
         }
 
@@ -137,10 +137,10 @@ public class HallController {
     public ResponseEntity<List<HallDTO>> getHalls(@PathVariable("centreName") String centreName) {
         log.info("Getting all pharmacies for the medical center '{}'.", centreName);
         HttpHeaders header = new HttpHeaders();
-        Centre c = centreService.findByName(centreName);
+        Center c = centerService.findByName(centreName);
 
         if (c == null) {
-            header.set("responseText", "centre");
+            header.set("responseText", "center");
             return new ResponseEntity<>(header, HttpStatus.NOT_FOUND);
         }
 
@@ -159,13 +159,13 @@ public class HallController {
     @ApiOperation("Удаление аптек")
     public ResponseEntity<Void> deleteHall(@PathVariable("number") int number, @PathVariable("centreName") String centreName) {
         log.info("Removal of the pharmacy '{}' medical center '{}'.", number, centreName);
-        Centre centre = centreService.findByName(centreName);
+        Center center = centerService.findByName(centreName);
 
-        if (centre == null) {
+        if (center == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        Hall hall = hallService.findByNumberAndCentre(number, centre);
+        Hall hall = hallService.findByNumberAndCentre(number, center);
 
         if (hall == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -193,13 +193,13 @@ public class HallController {
     @ApiOperation("Обновление(изменение) данных аптек")
     public ResponseEntity<Void> changeHall(@PathVariable("oldNumber") int oldNumber, @PathVariable("newNumber") int newNumber, @PathVariable("newName") String newName, @PathVariable("centreName") String centreName) {
         log.info("Updating (changing) the data of the pharmacy '{}' medical center '{}'.", newNumber, centreName);
-        Centre centre = centreService.findByName(centreName);
+        Center center = centerService.findByName(centreName);
 
-        if (centre == null) {
+        if (center == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        Hall hall = hallService.findByNumberAndCentre(oldNumber, centre);
+        Hall hall = hallService.findByNumberAndCentre(oldNumber, center);
 
         if (hall == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -224,14 +224,14 @@ public class HallController {
     @ApiOperation("Получение аптек по номерам")
     public ResponseEntity<HallDTO> getHallByNumber(@PathVariable("number") int number, @PathVariable("centreName") String centreName) {
         log.info("Getting pharmacies by numbers '{}' medical center '{}'.", number, centreName);
-        Centre centre = centreService.findByName(centreName);
+        Center center = centerService.findByName(centreName);
 
-        if (centre == null) {
+        if (center == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         }
 
-        Hall hall = hallService.findByNumberAndCentre(number, centre);
+        Hall hall = hallService.findByNumberAndCentre(number, center);
         if (hall == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -247,19 +247,19 @@ public class HallController {
     @ApiOperation("Добавления новых аптек")
     public ResponseEntity<Void> add(@RequestBody HallDTO hall) {
         log.info("Adding a new pharmacy '{}'.", hall.getName());
-        Centre centre = centreService.findByName(hall.getCentreName());
+        Center center = centerService.findByName(hall.getCentreName());
 
-        if (centre == null) {
+        if (center == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        Hall h = hallService.findByNumberAndCentre(hall.getNumber(), centre);
+        Hall h = hallService.findByNumberAndCentre(hall.getNumber(), center);
 
         if (h == null) {
-            Hall newHall = new Hall(centre, hall.getNumber(), hall.getName());
+            Hall newHall = new Hall(center, hall.getNumber(), hall.getName());
             hallService.save(newHall);
-            centre.getHalls().add(newHall);
-            centreService.save(centre);
+            center.getHalls().add(newHall);
+            centerService.save(center);
 
         } else {
             return new ResponseEntity<>(HttpStatus.ALREADY_REPORTED);

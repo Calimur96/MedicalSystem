@@ -42,9 +42,9 @@ public class DoctorDTO {
 		dto.setRole(UserRole.Doctor);
 		this.user = dto;
 		
-		if(d.getCentre() != null)
+		if(d.getCenter() != null)
 		{
-			this.centreName = d.getCentre().getName();
+			this.centreName = d.getCenter().getName();
 		}
 		else
 		{

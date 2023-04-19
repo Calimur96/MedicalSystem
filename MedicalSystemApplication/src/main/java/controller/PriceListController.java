@@ -5,14 +5,14 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import model.Appointment;
-import model.Centre;
+import model.Center;
 import model.Priceslist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import service.AppointmentService;
-import service.CentreService;
+import service.CenterService;
 import service.PriceListService;
 
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public class PriceListController {
     private PriceListService priceListService;
 
     @Autowired
-    private CentreService centreService;
+    private CenterService centerService;
 
     @Autowired
     private AppointmentService appointmentService;
@@ -44,7 +44,7 @@ public class PriceListController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        Centre c = centreService.findByName(centreName);
+        Center c = centerService.findByName(centreName);
 
         if (c == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -68,7 +68,7 @@ public class PriceListController {
     @ApiOperation("Получение всех typeOfExamination по названиям центров")
     public ResponseEntity<List<PriceListDTO>> getAllTypeExaminationByCentre(@PathVariable("centreName") String centreName) {
         log.info("Getting all typeOfExamination by medical center name '{}'.", centreName);
-        Centre c = centreService.findByName(centreName);
+        Center c = centerService.findByName(centreName);
 
         if (c == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -158,7 +158,7 @@ public class PriceListController {
     @ApiOperation("Добавление")
     public ResponseEntity<Void> add(@RequestBody PriceListDTO dto) {
         log.info("Adding a price list to medical center '{}'.", dto.getCentreName());
-        Centre c = centreService.findByName(dto.getCentreName());
+        Center c = centerService.findByName(dto.getCentreName());
         Priceslist pl = priceListService.findByTypeOfExaminationAndCentre(dto.getTypeOfExamination(), dto.getCentreName());
 
         if (c == null) {

@@ -9,7 +9,7 @@ public class PriceListDTO {
 	
 	public  PriceListDTO(Priceslist pr)
 	{
-		this.centreName = pr.getCentre().getName();
+		this.centreName = pr.getCenter().getName();
 		this.typeOfExamination = pr.getTypeOfExamination();
 		this.price = pr.getPrice();
 	}

@@ -24,7 +24,7 @@ public class HallDTO {
 	
 	public HallDTO(Hall hall)
 	{
-		this.centreName = hall.getCentre().getName();
+		this.centreName = hall.getCenter().getName();
 		this.number = hall.getNumber();
 		this.name = hall.getName();
 		this.date = "";

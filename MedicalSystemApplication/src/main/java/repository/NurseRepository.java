@@ -1,7 +1,6 @@
 package repository;
 
-import model.Centre;
-import model.Doctor;
+import model.Center;
 import model.Nurse;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -13,6 +12,6 @@ public interface NurseRepository extends JpaRepository<Nurse,Long> {
 
         List<Nurse> findByType(String type);
 
-        List<Nurse> findAllByCentreAndType(Centre centre, String type);
+        List<Nurse> findAllByCenterAndType(Center center, String type);
 
 }

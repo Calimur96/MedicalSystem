@@ -1,7 +1,6 @@
 package service;
 
-import model.Centre;
-import model.Doctor;
+import model.Center;
 import model.Nurse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,8 +27,8 @@ public class NurseService {
         return nurseRepository.findByType(type);
     }
 
-    public List<Nurse> findAllByCentreAndType(Centre centre, String type) {
-        return nurseRepository.findAllByCentreAndType(centre, type);
+    public List<Nurse> findAllByCentreAndType(Center center, String type) {
+        return nurseRepository.findAllByCenterAndType(center, type);
     }
 
     public void save(Nurse nurse) {

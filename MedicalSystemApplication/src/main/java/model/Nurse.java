@@ -28,7 +28,7 @@ public class Nurse extends User {
     private Date shiftEnd;
     
     @ManyToOne(fetch = FetchType.EAGER)
-    private Centre centre;
+    private Center center;
     
     @OneToMany
 	@LazyCollection(LazyCollectionOption.FALSE)
@@ -125,12 +125,12 @@ public class Nurse extends User {
 		this.prescriptions = prescriptions;
 	}
 
-	public Centre getCentre() {
-		return centre;
+	public Center getCenter() {
+		return center;
 	}
 
-	public void setCentre(Centre centre) {
-		this.centre = centre;
+	public void setCenter(Center center) {
+		this.center = center;
 	}
 
 
@@ -138,7 +138,7 @@ public class Nurse extends User {
 	{
 	    private Date shiftStart;
 	    private Date shiftEnd;
-	    public Centre centre;
+	    public Center center;
 	    public String type;
 
 
@@ -221,9 +221,9 @@ public class Nurse extends User {
 			return this;
 		}
 		
-		public Builder withCentre(Centre centre)
+		public Builder withCentre(Center center)
 		{
-			this.centre = centre;
+			this.center = center;
 			
 			return this;
 		}
@@ -240,7 +240,7 @@ public class Nurse extends User {
 			super.withRole(UserRole.Nurse);
 			User user = super.build();
 			Nurse n = new Nurse(user);
-			n.setCentre(this.centre);
+			n.setCenter(this.center);
 			n.setShiftStart(this.shiftStart);
 			n.setShiftEnd(this.shiftEnd);
 			n.setType(this.type);

@@ -9,8 +9,8 @@ public class FilterFactory {
             return null;
         }
 
-        if (filterType.equalsIgnoreCase("Centre")) {
-            return new CentreFilter();
+        if (filterType.equalsIgnoreCase("Center")) {
+            return new CenterFilter();
         }
 
         if (filterType.equalsIgnoreCase("HALL")) {

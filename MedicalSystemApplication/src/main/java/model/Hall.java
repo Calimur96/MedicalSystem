@@ -7,7 +7,6 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -26,7 +25,7 @@ public class Hall
 	@OneToOne()
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@JoinColumn(name = "centre_id")
-	private Centre centre;
+	private Center center;
 	
 	@Column(name= "number",nullable = false)
 	private int number; 	
@@ -44,9 +43,9 @@ public class Hall
 	}
 	
 	
-	public Hall(Centre centre, int number, String name) {
+	public Hall(Center center, int number, String name) {
 		super();
-		this.centre = centre;
+		this.center = center;
 		this.number = number;
 		this.name = name;
 		deleted = false;
@@ -89,17 +88,17 @@ public class Hall
 		this.id = id;
 	}
 
-	public Centre getCentre() {
-		return centre;
+	public Center getCenter() {
+		return center;
 	}
-	public void setCentre(Centre centre) {
-		this.centre = centre;
+	public void setCenter(Center center) {
+		this.center = center;
 	}
 
 
 	@Override
 	public String toString() {
-		return "Hall [hallID=" + id + ", centre=" + centre + ", number=" + number + ", scheduleAppointments="
+		return "Hall [hallID=" + id + ", center=" + center + ", number=" + number + ", scheduleAppointments="
 				+ "]";
 	}
 	

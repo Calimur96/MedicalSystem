@@ -1,7 +1,7 @@
 package service;
 
 import dto.VacationDTO;
-import model.Centre;
+import model.Center;
 import model.User;
 import model.Vacation;
 import model.VacationRequest;
@@ -33,9 +33,9 @@ public class VacationRequestService {
         return vacationRequestRepository.findAllByUser(user);
     }
 
-    public List<VacationRequest> findAllByCentre(Centre centre)
+    public List<VacationRequest> findAllByCentre(Center center)
     {
-        return vacationRequestRepository.findAllByCentre(centre);
+        return vacationRequestRepository.findAllByCenter(center);
     }
 
     @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRES_NEW)

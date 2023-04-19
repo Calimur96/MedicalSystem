@@ -31,7 +31,7 @@ public class PatientMedicalReport {
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "centre_id")
-    private Centre centre;
+    private Center center;
 
 	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "patient_id")
@@ -54,12 +54,12 @@ public class PatientMedicalReport {
 
 	}
 	
-	public PatientMedicalReport(String description, Date dateAndTime, Doctor doctor, Centre centre, Patient patient, Prescription prescription) {
+	public PatientMedicalReport(String description, Date dateAndTime, Doctor doctor, Center center, Patient patient, Prescription prescription) {
 		super();
 		this.description = description;
 		this.dateAndTime = dateAndTime;
 		this.doctor = doctor;
-		this.centre = centre;
+		this.center = center;
 		this.patient = patient;
 		this.prescription = prescription;
 		this.diagnosis = new ArrayList<>();
@@ -106,12 +106,12 @@ public class PatientMedicalReport {
 		this.doctor = doctor;
 	}
 
-	public Centre getCentre() {
-		return centre;
+	public Center getCenter() {
+		return center;
 	}
 
-	public void setCentre(Centre centre) {
-		this.centre = centre;
+	public void setCenter(Center center) {
+		this.center = center;
 	}
 
 	public List<Diagnosis> getDiagnosis() {
@@ -134,7 +134,7 @@ public class PatientMedicalReport {
 	    private String description;
 	    private Date dateAndTime;
 	    private Doctor doctor;
-	    private Centre centre;
+	    private Center center;
 		private Patient patient;
 		private Prescription prescription;
 		private List<Diagnosis> diagnosis;
@@ -158,9 +158,9 @@ public class PatientMedicalReport {
 			return this;
 		}
 		
-		public Builder withCentre(Centre c)
+		public Builder withCentre(Center c)
 		{
-			this.centre = c;
+			this.center = c;
 			
 			return this;
 		}
@@ -189,7 +189,7 @@ public class PatientMedicalReport {
 		public PatientMedicalReport build()
 		{
 			PatientMedicalReport rp = new PatientMedicalReport();
-			rp.setCentre(this.centre);
+			rp.setCenter(this.center);
 			rp.setDateAndTime(this.dateAndTime);
 			rp.setDescription(this.description);
 			rp.setDiagnosis(this.diagnosis);

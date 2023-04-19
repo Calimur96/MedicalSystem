@@ -52,6 +52,7 @@ public class CenterController {
             center.setCity(dto.getCity());
             center.setDescription(dto.getDescription());
             center.setState(dto.getState());
+            center.setRating(dto.getRating());
             center.setDoctors(new ArrayList<>());
             center.setHalls(new ArrayList<>());
             center.setReviews(new ArrayList<>());

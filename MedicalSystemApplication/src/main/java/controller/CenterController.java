@@ -13,16 +13,14 @@ import helpers.Scheduler;
 import helpers.UserSortingComparator;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import model.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import service.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 @Slf4j
@@ -30,27 +28,20 @@ import java.util.*;
 @RequestMapping(value = "api/center")
 @CrossOrigin
 @Api
+@RequiredArgsConstructor
 public class CenterController {
 
-    @Autowired
-    private CenterService centerService;
+    private final CenterService centerService;
 
-    @Autowired
-    private UserService userService;
+    private final NurseService nurseService;
 
-    @Autowired
-    private NurseService nurseService;
+    private final AppointmentService appointmentService;
 
-    @Autowired
-    private AppointmentService appointmentService;
-
-    @Autowired
-    private NotificationService notificationService;
     private Center center;
 
     @PostMapping(value = "/registerCenter", consumes = "application/json")
     @ApiOperation("Создание центров")
-    public ResponseEntity<Void> registerCentre(@RequestBody CenterDTO dto, HttpServletRequest request) {
+    public ResponseEntity<Void> registerCentre(@RequestBody CenterDTO dto) {
         log.info("Creating a center named '{}'.", dto.getName());
         Center c = centerService.findByName((dto.getName()));
 
@@ -69,7 +60,7 @@ public class CenterController {
             return new ResponseEntity<>(HttpStatus.ALREADY_REPORTED);
         }
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping(value = "/getNurse/{nurseEmail}")
@@ -106,16 +97,17 @@ public class CenterController {
 
     @GetMapping(value = "/findById/{id}")
     @ApiOperation("Поиск центра по id")
-    public ResponseEntity<Center> findCenterById(@PathVariable("id") Long id){
-        log.info("Search center with id ('{}').",id);
+    public ResponseEntity<Center> findCenterById(@PathVariable("id") Long id) {
+        log.info("Search center with id ('{}').", id);
         ResponseEntity<Center> resultEntity;
-            try {
-                 center = centerService.findById(id);
-                resultEntity = new ResponseEntity<>(center,HttpStatus.OK);
-            }catch (NoSuchElementException e){
-                System.err.println(e);
-                resultEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
+
+        try {
+            center = centerService.findById(id);
+            resultEntity = new ResponseEntity<>(center, HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            System.err.println(e);
+            resultEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
         return resultEntity;
     }
@@ -130,27 +122,27 @@ public class CenterController {
         if (centers == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        Date realDate = DateUtil.getInstance().getDate(date,"dd-MM-yyyy");
-             Filter filter = FilterFactory.getInstance().get("center");
+        Date realDate = DateUtil.getInstance().getDate(date, "dd-MM-yyyy");
+        Filter filter = FilterFactory.getInstance().get("center");
 
-             for (Center c : centers) {
-                 List<Doctor> doctors = c.getDoctors();
+        for (Center c : centers) {
+            List<Doctor> doctors = c.getDoctors();
 
-                 for (Doctor d : doctors) {
-                     int freeTime = Scheduler.getFreeIntervals(d, realDate).size();
+            for (Doctor d : doctors) {
+                int freeTime = Scheduler.getFreeIntervals(d, realDate).size();
 
-                     if (d.IsFreeOn(realDate) && d.getType().equalsIgnoreCase(typeOfExamination) && freeTime > 0) {
-                         if (filter.test(c, dto)) {
-                             centresDTO.add(new CenterDTO());
-                             break;
-                         }
-                     }
-                 }
-             }
+                if (d.IsFreeOn(realDate) && d.getType().equalsIgnoreCase(typeOfExamination) && freeTime > 0) {
+                    if (filter.test(c, dto)) {
+                        centresDTO.add(new CenterDTO());
+                        break;
+                    }
+                }
+            }
+        }
 
-             CenterDTO[] ret = centresDTO.toArray(centresDTO.toArray(new CenterDTO[centers.size()]));
+        CenterDTO[] ret = centresDTO.toArray(centresDTO.toArray(new CenterDTO[centers.size()]));
 
-             return new ResponseEntity<>(ret, HttpStatus.OK);
+        return new ResponseEntity<>(ret, HttpStatus.OK);
     }
 
     @GetMapping(value = "/getPatients/{centerName}")
@@ -193,7 +185,6 @@ public class CenterController {
     @ApiOperation("Получение пациентов центров по названиям центром и фильтрация")
     public ResponseEntity<List<UserDTO>> getCentrePatientByFilter(@PathVariable("centerName") String centerName, @RequestBody UserDTO dto) {
         log.info("Get center patients by name '{}' with filtering.", centerName);
-        HttpHeaders header = new HttpHeaders();
         Center c = centerService.findByName(centerName);
 
         if (c == null) {
@@ -206,86 +197,70 @@ public class CenterController {
         PatientFilter filter = (PatientFilter) FilterFactory.getInstance().get("patient");
         appointments = appointmentService.findAllByCentre(c);
 
-        if(appointments.isEmpty())
-        {
+        if (appointments.isEmpty()) {
             System.out.println("There's no check-up at that center");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        for(Appointment app: appointments)
-        {
+        for (Appointment app : appointments) {
             Patient p = app.getPatient();
 
-            if(p == null)
-            {
+            if (p == null) {
                 continue;
             }
 
-            if(!ListUtil.getInstance().containsWithEmail(ret, p.getEmail()))
-            {
-                if(filter.test(app.getPatient(), dto))
-                {
+            if (!ListUtil.getInstance().containsWithEmail(ret, p.getEmail())) {
+                if (filter.test(app.getPatient(), dto)) {
                     ret.add(new UserDTO(app.getPatient()));
                 }
             }
         }
 
-        return new ResponseEntity<>(ret,HttpStatus.OK);
-
+        return new ResponseEntity<>(ret, HttpStatus.OK);
     }
 
-    @GetMapping(value="/getDoctorsByType/{centerName}/{typeOfExamination}")
+    @GetMapping(value = "/getDoctorsByType/{centerName}/{typeOfExamination}")
     @ApiOperation("Получение докторов по типам услуг и названиям центров")
-    public ResponseEntity<List<DoctorDTO>> getClinicDoctorsByType(@PathVariable("centerName") String centerName, @PathVariable("typeOfExamination") String typeOfExamination)
-    {
+    public ResponseEntity<List<DoctorDTO>> getClinicDoctorsByType(@PathVariable("centerName") String centerName, @PathVariable("typeOfExamination") String typeOfExamination) {
         log.info("Obtaining doctors by service types ('{}') and center names ('{}').", typeOfExamination, centerName);
         Center center = centerService.findByName(centerName);
-        if(center == null)
-        {
+        if (center == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         List<Doctor> doctors = center.getDoctors();
         List<DoctorDTO> dtos = new ArrayList<DoctorDTO>();
 
-        for(Doctor doc : doctors)
-        {
-            if(doc.getDeleted() == false && doc.getType().equalsIgnoreCase(typeOfExamination))
-            {
+        for (Doctor doc : doctors) {
+            if (doc.getDeleted() == false && doc.getType().equalsIgnoreCase(typeOfExamination)) {
                 DoctorDTO dto = new DoctorDTO(doc);
                 dtos.add(dto);
             }
         }
 
-        return new ResponseEntity<>(dtos,HttpStatus.OK);
-
+        return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
 
-    @GetMapping(value="/getDoctorsByTypeAndVacation/{centerName}/{typeOfExamination}/{date}")
+    @GetMapping(value = "/getDoctorsByTypeAndVacation/{centerName}/{typeOfExamination}/{date}")
     @ApiOperation("Получение докторов по типам услуг, названиям центров и отпускам")
-    public ResponseEntity<DoctorDTO[]> getCentreDoctorsByTypeAndVacation(@PathVariable("centerName") String centerName, @PathVariable("typeOfExamination") String typeOfExamination, @PathVariable("date") String date)
-    {
+    public ResponseEntity<DoctorDTO[]> getCentreDoctorsByTypeAndVacation(@PathVariable("centerName") String centerName, @PathVariable("typeOfExamination") String typeOfExamination, @PathVariable("date") String date) {
         log.info("Obtaining doctors by service types ('{}'), center names ('{}') and vacations ('{}').", typeOfExamination, centerName, date);
         Center center = centerService.findByName(centerName);
-        if(center == null)
-        {
+        if (center == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         List<Doctor> doctors = center.getDoctors();
         List<DoctorDTO> dtos = new ArrayList<DoctorDTO>();
 
-        for(Doctor doc : doctors)
-        {
-            if(doc.getDeleted() == false && doc.getType().equalsIgnoreCase(typeOfExamination)
-                    && doc.IsFreeOn(DateUtil.getInstance().getDate(date, "dd-MM-yyyy")))
-            {
+        for (Doctor doc : doctors) {
+            if (doc.getDeleted() == false && doc.getType().equalsIgnoreCase(typeOfExamination)
+                    && doc.IsFreeOn(DateUtil.getInstance().getDate(date, "yyyy-MM-dd"))) {
                 DoctorDTO dto = new DoctorDTO(doc);
                 dtos.add(dto);
             }
         }
 
-        return new ResponseEntity<>(dtos.toArray(new DoctorDTO[dtos.size()]),HttpStatus.OK);
-
+        return new ResponseEntity<>(dtos.toArray(new DoctorDTO[dtos.size()]), HttpStatus.OK);
     }
 }

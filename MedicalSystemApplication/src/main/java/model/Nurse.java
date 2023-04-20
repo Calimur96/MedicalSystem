@@ -64,8 +64,10 @@ public class Nurse extends User {
 		super(dto.getUser());
 		this.setRole(UserRole.Doctor);
 		this.setIsFirstLog(true);
-		this.shiftStart = DateUtil.getInstance().getDate(dto.getShiftStart(), "HH:mm");
-		this.shiftEnd = DateUtil.getInstance().getDate(dto.getShiftEnd(), "HH:mm");
+		this.type = dto.getType();
+		this.setCenter(center);
+		this.shiftStart = DateUtil.getInstance().getDate(dto.getShiftStart(), "yyyy-MM-dd HH:mm");
+		this.shiftEnd = DateUtil.getInstance().getDate(dto.getShiftEnd(), "yyyy-MM-dd HH:mm");
 		this.vacations = new ArrayList<>();
 	}
 
@@ -84,55 +86,6 @@ public class Nurse extends User {
 
 		return true;
 	}
-
-	public List<Vacation> getVacations() {
-		return vacations;
-	}
-
-	public void setVacations(List<Vacation> vacations) {
-		this.vacations = vacations;
-	}
-
-	public Date getShiftStart() {
-		return shiftStart;
-	}
-
-	public void setShiftStart(Date shiftStart) {
-		this.shiftStart = shiftStart;
-	}
-
-	public Date getShiftEnd() {
-		return shiftEnd;
-	}
-
-	public void setShiftEnd(Date shiftEnd) {
-		this.shiftEnd = shiftEnd;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	public List<Prescription> getPrescriptions() {
-		return prescriptions;
-	}
-
-	public void setPrescriptions(List<Prescription> prescriptions) {
-		this.prescriptions = prescriptions;
-	}
-
-	public Center getCenter() {
-		return center;
-	}
-
-	public void setCenter(Center center) {
-		this.center = center;
-	}
-
 
 	public static class Builder extends UserBuilder
 	{

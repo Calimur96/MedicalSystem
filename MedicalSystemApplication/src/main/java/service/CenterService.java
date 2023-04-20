@@ -2,15 +2,13 @@ package service;
 
 import dto.ReviewDTO;
 import helpers.DateUtil;
-import model.Center;
-import model.CenterReview;
-import model.Doctor;
-import model.Patient;
+import model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import repository.CenterRepository;
+import repository.NurseRepository;
 import repository.UserRepository;
 
 
@@ -23,6 +21,8 @@ public class CenterService {
 
     @Autowired
     private CenterRepository centerRepository;
+    @Autowired
+    private NurseRepository nurseRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -35,6 +35,7 @@ public class CenterService {
     public Center findByDoctor(Doctor d) {
         return centerRepository.findByDoctors(d);
     }
+    public Center getByName(String name){return  centerRepository.getByName(name);}
 
     @Transactional(isolation = Isolation.READ_UNCOMMITTED)
     public void rateCentreSafe(ReviewDTO dto)  {

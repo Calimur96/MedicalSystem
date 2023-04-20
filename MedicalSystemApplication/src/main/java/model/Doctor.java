@@ -80,10 +80,7 @@ public class Doctor extends User
 		this.setIsFirstLog(true);
 		this.type = dto.getType();
 		this.shiftStart = DateUtil.getInstance().getDate(dto.getShiftStart(), "yyyy-MM-dd HH:mm");
-		//DateUtil.getInstance().getDate(dto.getShiftStart(), "HH:mm");
 		this.shiftEnd =DateUtil.getInstance().getDate(dto.getShiftEnd(), "yyyy-MM-dd HH:mm");
-		//DateUtil.getInstance().getDate(dto.getShiftEnd(), "HH:mm");
-
 		this.appointments = new ArrayList<Appointment>();
 		this.vacations = new ArrayList<Vacation>();
 		this.reviews = new ArrayList<ReviewDoctor>();

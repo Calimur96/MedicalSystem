@@ -9,6 +9,7 @@ import java.util.List;
 public interface NurseRepository extends JpaRepository<Nurse,Long> {
 
         Nurse findByEmail(String email);
+        List<Nurse> findAllByCenter(Center center);
 
         List<Nurse> findByType(String type);
 

@@ -26,6 +26,7 @@ public class NurseService {
     public List<Nurse> findByType(String type) {
         return nurseRepository.findByType(type);
     }
+    public List<Nurse> findAllByCenter(Center center){return nurseRepository.findAllByCenter(center);}
 
     public List<Nurse> findAllByCentreAndType(Center center, String type) {
         return nurseRepository.findAllByCenterAndType(center, type);

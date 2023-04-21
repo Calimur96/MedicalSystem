@@ -71,7 +71,7 @@ public class AppointmentService {
 
         Hall h = hallRepository.findByNumberAndCenterAndDeleted(hallNumber, c, false);
 
-        return findAppointment(d,h,c);
+        return appointmentRepository.findByDateAndHallAndCenter(d,h,c);
     }
 
 

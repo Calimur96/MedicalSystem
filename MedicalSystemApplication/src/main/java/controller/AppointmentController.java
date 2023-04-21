@@ -739,14 +739,13 @@ public class AppointmentController {
         HttpHeaders header = new HttpHeaders();
         Appointment app = appointmentService.findAppointment(dto.getDate(), dto.getHallNumber(), dto.getCentreName());
 
-        if (app == null)
-        {
+        if (app == null) {
             header.set("responseText", "Appointment not found: " + dto.getDate() + " ," + dto.getHallNumber() + ", " + dto.getCentreName());
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         appointmentService.delete(app);
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/denyRequest")

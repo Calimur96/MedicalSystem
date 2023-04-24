@@ -37,6 +37,8 @@ public class CenterService {
     }
     public Center getByName(String name){return  centerRepository.getByName(name);}
 
+    public List<Center> findAllByCity(String city){return  centerRepository.findAllByCity(city);}
+    public List<Center> findAllByState(String state){return  centerRepository.findAllByState(state);}
     @Transactional(isolation = Isolation.READ_UNCOMMITTED)
     public void rateCentreSafe(ReviewDTO dto)  {
         Center center = findByName(dto.getCentreName());

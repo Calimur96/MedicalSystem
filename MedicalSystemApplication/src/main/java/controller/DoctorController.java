@@ -10,9 +10,9 @@ import helpers.Scheduler;
 import helpers.SecurePasswordHasher;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import model.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,25 +28,15 @@ import java.util.List;
 @RequestMapping(value = "api/doctors")
 @CrossOrigin
 @Api
+@RequiredArgsConstructor
 public class DoctorController {
 
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private AppointmentService appointmentService;
-
-    @Autowired
-    private CenterService centerService;
-
-    @Autowired
-    private NotificationService notificationService;
-
-    @Autowired
-    private DoctorService doctorService;
-
-    @Autowired
-    private PatientService patientService;
+    private final UserService userService;
+    private final AppointmentService appointmentService;
+    private final CenterService centerService;
+    private final NotificationService notificationService;
+    private final DoctorService doctorService;
+    private final PatientService patientService;
 
     @PostMapping(value = "/makeNewDoctor", consumes = "application/json")
     @ApiOperation("Добавление нового доктора")
@@ -54,6 +44,7 @@ public class DoctorController {
         log.info("Adding a new doctor to the center '{}'.", dto.getCentreName());
         Doctor d = doctorService.findByEmail(dto.getUser().getEmail());
         Center c = centerService.findByName(dto.getCentreName());
+        User user = userService.findByEmail(dto.getUser().getEmail());
 
         if (d != null) {
             return new ResponseEntity<>(HttpStatus.ALREADY_REPORTED);
@@ -77,10 +68,7 @@ public class DoctorController {
 
         c.getDoctors().add(doctor);
         centerService.save(c);
-
-        User user = userService.findByEmail(dto.getUser().getEmail());
-        user.setDeleted(true);
-        userService.save(user);
+        setUserDeleted(user);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -190,6 +178,11 @@ public class DoctorController {
         }
 
         return new ResponseEntity<>(dtos, HttpStatus.OK);
+    }
+
+    private void setUserDeleted(User user) {
+        user.setDeleted(true);
+        userService.save(user);
     }
 
 }

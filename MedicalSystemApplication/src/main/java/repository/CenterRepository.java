@@ -16,6 +16,8 @@ public interface CenterRepository extends JpaRepository<Center, Long> {
      Center getOne(Long id);
      Center findByDoctors(Doctor d);
      Center getByName(String name);
+     List<Center> findAllByCity(String city);
+     List<Center> findAllByState(String state);
 
     @Lock(value = LockModeType.PESSIMISTIC_READ)
      List<Center> findAll();

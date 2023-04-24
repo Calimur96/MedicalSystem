@@ -96,6 +96,28 @@ public class CenterController {
         return new ResponseEntity<>(centresDTO.toArray(new CenterDTO[centresDTO.size()]), HttpStatus.OK);
     }
 
+    @GetMapping(value = "/findByCity/{city}")
+    @ApiOperation("Поиск центров по городу")
+    public ResponseEntity<List<Center>> getCenterByCity(@PathVariable String city){
+        log.info("Getting all medical centers in city '{}'",city);
+        List<Center> centers = centerService.findAllByCity(city);
+        if (centers.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(centers,HttpStatus.OK) ;
+    }
+
+    @GetMapping(value = "/findByState/{state}")
+    @ApiOperation("Поиск центров по стране")
+    public ResponseEntity<List<Center>> getCentersByState(@PathVariable String state){
+        List<Center> centers = centerService.findAllByState(state);
+        if (centers.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(centers,HttpStatus.OK) ;
+
+    }
+
     @GetMapping(value = "/findById/{id}")
     @ApiOperation("Поиск центра по id")
     public ResponseEntity<Center> findCenterById(@PathVariable("id") Long id) {

@@ -11,6 +11,7 @@ import model.User.UserRole;
 public interface UserRepository extends JpaRepository<User,Long>{
 
 	User findByEmail(String email);
+	User getByEmail(String email);
 
 	User findByPhone(String phone);
 

@@ -78,6 +78,10 @@ public class DoctorController {
         c.getDoctors().add(doctor);
         centerService.save(c);
 
+        User user = userService.findByEmail(dto.getUser().getEmail());
+        user.setDeleted(true);
+        userService.save(user);
+
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

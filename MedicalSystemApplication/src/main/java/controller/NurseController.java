@@ -10,12 +10,14 @@ import lombok.extern.slf4j.Slf4j;
 import model.Center;
 import model.Doctor;
 import model.Nurse;
+import model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import service.CenterService;
 import service.NurseService;
+import service.UserService;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -29,6 +31,7 @@ import java.util.List;
 public class NurseController {
     private final CenterService centerService;
     private final NurseService nurseService;
+    private final UserService userService;
 
     @GetMapping(value = "/getNursesList/{id}")
     @ApiOperation("Получение списка специалистов центра по id центра")
@@ -68,6 +71,9 @@ public class NurseController {
         nurse.setPassword(pass);
         nurse.setCenter(c);
         nurseService.save(nurse);
+        User user = userService.findByEmail( dto.getUser().getEmail());
+        user.setDeleted(true);
+        userService.save(user);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

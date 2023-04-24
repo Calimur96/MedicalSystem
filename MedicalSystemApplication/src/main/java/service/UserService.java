@@ -16,15 +16,9 @@ public class UserService {
 		userRepository.delete(user);
 	}
 
-	public List<User> getAll(UserRole role) {
-		return userRepository.findAllByRole(role);
+	public List<User> getAll(UserRole role) { return userRepository.findAllByRole(role);}
 
-	}
-
-	public List<User> getAllByRole(UserRole role) {
-		return userRepository.findAllByRole(role);
-
-	}
+	public List<User> getAllByRole(UserRole role) {return userRepository.findAllByRole(role);}
 
 	public List<User> getAll() {
 		return userRepository.findAll();
@@ -32,14 +26,11 @@ public class UserService {
 
 	public User findById(Long id) {
 		Optional<User> user = userRepository.findById(id);
-
 		return user.orElse(null);
-
 	}
 
-		public User findByEmail(String email) {
-		return userRepository.findByEmail(email);
-	}
+
+		public User findByEmail(String email) { return userRepository.findByEmail(email);}
 
 	    public User findByPhone(String phone) {
 		return userRepository.findByPhone(phone);
@@ -47,10 +38,7 @@ public class UserService {
 
 
 
-	public void save(User user) {
-		userRepository.save(user);
-
-	}
+	public void save(User user) { userRepository.save(user);}
 
 }
 

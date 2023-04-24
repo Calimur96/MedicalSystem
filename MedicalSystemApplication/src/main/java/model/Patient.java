@@ -2,6 +2,7 @@ package model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import dto.PatientDTO;
 import helpers.UserBuilder;
 import lombok.Data;
 import model.User.UserRole;
@@ -27,6 +28,10 @@ public class Patient extends User {
 		super(username, password, email, firstname, lastname, city, state, date_of_birth, phone, UserRole.Patient);
 		medicalRecord = new MedicalRecord();
 		this.setIsFirstLog(false);
+	}
+	public Patient(PatientDTO dto){
+		super(dto.getUser());
+		medicalRecord = new MedicalRecord();
 	}
 	
 	public Patient(RegistrationRequest request)

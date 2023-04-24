@@ -1,6 +1,5 @@
 package controller;
 
-import dto.DoctorDTO;
 import dto.NurseDTO;
 import helpers.SecurePasswordHasher;
 import io.swagger.annotations.Api;
@@ -8,10 +7,8 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import model.Center;
-import model.Doctor;
 import model.Nurse;
 import model.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +26,7 @@ import java.util.List;
 @Api
 @RequiredArgsConstructor
 public class NurseController {
+
     private final CenterService centerService;
     private final NurseService nurseService;
     private final UserService userService;
@@ -39,6 +37,7 @@ public class NurseController {
         log.info("Getting a List of nurses in center where id '{}'.", id);
         Center c = centerService.findById(id);
         List<Nurse> n = nurseService.findAllByCenter(c);
+
         if (n == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -52,6 +51,8 @@ public class NurseController {
         log.info("Adding a new Nurse to the center '{}'", dto.getCentreName());
         Nurse n = nurseService.findByEmail(dto.getUser().getEmail());
         Center c = centerService.getByName(dto.getCentreName());
+        User user = userService.findByEmail(dto.getUser().getEmail());
+
         if (n != null) {
             return new ResponseEntity<>(HttpStatus.ALREADY_REPORTED);
         }
@@ -61,6 +62,7 @@ public class NurseController {
         }
 
         String pass = dto.getUser().getPassword();
+
         try {
             pass = SecurePasswordHasher.getInstance().encode(pass);
         } catch (NoSuchAlgorithmException e) {
@@ -71,11 +73,14 @@ public class NurseController {
         nurse.setPassword(pass);
         nurse.setCenter(c);
         nurseService.save(nurse);
-        User user = userService.findByEmail( dto.getUser().getEmail());
-        user.setDeleted(true);
-        userService.save(user);
+        setUserDeleted(user);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    private void setUserDeleted(User user) {
+        user.setDeleted(true);
+        userService.save(user);
     }
 
 }

@@ -80,7 +80,7 @@ public class CenterController {
 
     @GetMapping(value = "/getAll")
     @ApiOperation("Поиск всех центров")
-    public ResponseEntity<CenterDTO[]> getCentres() {
+    public ResponseEntity<List<Center>> getCentres() {
         log.info("Getting all medical centers.");
         List<Center> centers = centerService.findAllSafe();
         List<CenterDTO> centresDTO = new ArrayList<CenterDTO>();
@@ -93,9 +93,25 @@ public class CenterController {
             centresDTO.add(dto);
         }
 
-        return new ResponseEntity<>(centresDTO.toArray(new CenterDTO[centresDTO.size()]), HttpStatus.OK);
+        return new ResponseEntity<>(centers, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/findById/{id}")
+    @ApiOperation("Поиск центра по id")
+    public ResponseEntity<Center> findCenterById(@PathVariable("id") Long id) {
+        log.info("Search center with id ('{}').", id);
+        ResponseEntity<Center> resultEntity;
+
+        try {
+            center = centerService.findById(id);
+            resultEntity = new ResponseEntity<>(center, HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            System.err.println(e);
+            resultEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return resultEntity;
+    }
     @GetMapping(value = "/findByCity/{city}")
     @ApiOperation("Поиск центров по городу")
     public ResponseEntity<List<Center>> getCenterByCity(@PathVariable String city){
@@ -118,22 +134,7 @@ public class CenterController {
 
     }
 
-    @GetMapping(value = "/findById/{id}")
-    @ApiOperation("Поиск центра по id")
-    public ResponseEntity<Center> findCenterById(@PathVariable("id") Long id) {
-        log.info("Search center with id ('{}').", id);
-        ResponseEntity<Center> resultEntity;
 
-        try {
-            center = centerService.findById(id);
-            resultEntity = new ResponseEntity<>(center, HttpStatus.OK);
-        } catch (NoSuchElementException e) {
-            System.err.println(e);
-            resultEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        return resultEntity;
-    }
 
     @PostMapping(value = "/getAll/{date}/{type}")
     @ApiOperation("Поиск всех центров с фильтрами даты и типа")

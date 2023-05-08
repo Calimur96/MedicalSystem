@@ -1,6 +1,8 @@
 package model;
 
 import javax.persistence.*;
+
+import dto.RegistrationRequestDTO;
 import dto.UserDTO;
 import lombok.Data;
 
@@ -79,9 +81,8 @@ public class User   {
 		this.verified = false;
 	}
 	
-	public User(RegistrationRequest request, UserRole role)
+	public User(RegistrationRequestDTO request, UserRole role)
 	{
-		super();
 		this.password = request.getPassword();
 		this.email = request.getEmail();
 		this.role = role;
@@ -90,9 +91,9 @@ public class User   {
 	}
 
 
-	public User(RegistrationRequest request)
+	public User(RegistrationRequestDTO request)
 	{
-		super();
+
 		this.password = request.getPassword();
 		this.email = request.getEmail();
 		this.deleted = false;

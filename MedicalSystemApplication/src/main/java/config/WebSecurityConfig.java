@@ -20,7 +20,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .authorizeRequests()
                     .antMatchers("/**").permitAll();
     }
-
+    //access refresh token
+    //jwt
     @Override
     protected void configure(AuthenticationManagerBuilder authManager) throws Exception {
         // This is the code you usually have to configure your authentication manager.

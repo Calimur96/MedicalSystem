@@ -1,21 +1,21 @@
 package controller;
 
+import dto.CodeDto;
 import dto.DenyRegisterDTO;
 import dto.RegistrationRequestDTO;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import model.ConfirmationCodes;
 import model.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
+import service.ConfirmationCodesService;
 import service.NotificationService;
 import service.UserService;
-
-import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api/reg")
@@ -27,6 +27,8 @@ public class RegistrationController {
 
     private final NotificationService notificationService;
 
+    private final ConfirmationCodesService confirmationCodesService;
+
     //Метод первичной регистрации
     @PostMapping(value = "/registerRequest", consumes = "application/json")
     public ResponseEntity<Void> signUpFirstStep(@RequestBody RegistrationRequestDTO req) {
@@ -35,18 +37,44 @@ public class RegistrationController {
         }
         User user = new User(req);
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
-//        user.setVerifiedEmail(false);
-//        user.setVerifiedPhone(false);
         userService.save(user);
+
+        int emailVerificationCode = codeGeneration();
+        int phoneVerificationCode = codeGeneration();
+
+        ConfirmationCodes confirmationCodes = new ConfirmationCodes();
+        confirmationCodes.setId(user.getId());
+        confirmationCodes.setEmailVerificationCode(emailVerificationCode);
+        confirmationCodes.setPhoneVerificationCode(phoneVerificationCode);
+        confirmationCodesService.save(confirmationCodes);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping(value = "/verifyAccount/{email}")
+    @PostMapping(value = "/confirmRegister/{email}")
+    @ApiOperation("Подтверждение электронной почты при регистрации")
+    public ResponseEntity<Void> confirmRegister(@PathVariable("email") String email) {
+        log.info("Password confirmation during registration with email '{}'.", email);
+        User user = userService.findByEmail(email);
+
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        ConfirmationCodes confirmationCodes = confirmationCodesService.findByUserId(user.getId());
+
+        notificationService.sendNotification(user.getEmail(), "Registration Center",
+                "Your request for registration for the Medical Center has been accepted.\nYour registration confirmation code:\n" + confirmationCodes.getEmailVerificationCode());
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/verifyAccount/{email}")
     @ApiOperation("Проверка и обновление cозданного аккаунта")
-    public ResponseEntity<Void> verifyAccountByEmail(@PathVariable("email") String email) {
+    public ResponseEntity<Void> verifyAccountByEmail(@PathVariable("email") String email, @RequestBody CodeDto codeDto) {
         log.info("Checking and updating the created account with email '{}'.", email);
         User u = userService.findByEmail(email);
+        ConfirmationCodes confirmationCodes = confirmationCodesService.findByUserId(u.getId());
 
         if (u == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -56,27 +84,13 @@ public class RegistrationController {
             return new ResponseEntity<>(HttpStatus.OK);
         }
 
+        if (codeDto.getCode() != confirmationCodes.getEmailVerificationCode()){
+            return new ResponseEntity<>(HttpStatus.LOCKED);
+        }
+
         u.setVerifiedEmail(true);
         userService.save(u);
         return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @PostMapping(value = "/confirmRegister/{email}")
-    @ApiOperation("Подтверждение пароля при регистрации")
-    public ResponseEntity<Void> confirmRegister(@PathVariable("email") String email, HttpServletRequest httpRequest) {
-        log.info("Password confirmation during registration with email '{}'.", email);
-        User user = userService.findByEmail(email);
-
-        if (user == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        String verifyAccountUrl = getVerifyAccountUrl(httpRequest, email);
-        notificationService.sendNotification(user.getEmail(), "Registration Center",
-                "Your request for registration for the Medical Center has been accepted.\nPlease confirm your registration by visiting the link:\n" + verifyAccountUrl);
-
-        return new ResponseEntity<>(HttpStatus.OK);
-
     }
 
     @DeleteMapping(value = "/denyRegister")
@@ -122,13 +136,9 @@ public class RegistrationController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    public String getVerifyAccountUrl(HttpServletRequest httpRequest, String email) {
-        String requestURL = httpRequest.getRequestURL().toString();
-        String url = requestURL.split("confirmRegister")[0];
-        return UriComponentsBuilder.fromHttpUrl(url)
-                .pathSegment("verifyAccount")
-                .pathSegment(email)
-                .toUriString();
+    public int codeGeneration() {
+        int generatedNumber = (int) (Math.random() * 10000);
+        return generatedNumber;
     }
 
 }

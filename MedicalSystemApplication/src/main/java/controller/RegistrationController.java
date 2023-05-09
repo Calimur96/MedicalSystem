@@ -1,14 +1,11 @@
 package controller;
 
 import dto.DenyRegisterDTO;
-import dto.DoctorDTO;
 import dto.RegistrationRequestDTO;
-import dto.UserDTO;
-import helpers.SecurePasswordHasher;
 import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import model.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
@@ -18,32 +15,33 @@ import org.springframework.web.util.UriComponentsBuilder;
 import service.NotificationService;
 import service.UserService;
 
-import javax.persistence.Access;
 import javax.servlet.http.HttpServletRequest;
-import java.security.NoSuchAlgorithmException;
 
 @RestController
 @RequestMapping("/api/reg")
 @Slf4j
+@RequiredArgsConstructor
 public class RegistrationController {
-    @Autowired
-    private UserService userService;
 
-    @Autowired
-    private NotificationService notificationService;
+    private final UserService userService;
+
+    private final NotificationService notificationService;
+
     //Метод первичной регистрации
     @PostMapping(value = "/registerRequest", consumes = "application/json")
-    public ResponseEntity<Void> signUpFirstStep(@RequestBody RegistrationRequestDTO req){
-        if (userService.findByEmail(req.getEmail())!= null){
+    public ResponseEntity<Void> signUpFirstStep(@RequestBody RegistrationRequestDTO req) {
+        if (userService.findByEmail(req.getEmail()) != null) {
             return new ResponseEntity<>(HttpStatus.ALREADY_REPORTED);
         }
         User user = new User(req);
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
-        user.setVerified(false);
+//        user.setVerifiedEmail(false);
+//        user.setVerifiedPhone(false);
         userService.save(user);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
     @GetMapping(value = "/verifyAccount/{email}")
     @ApiOperation("Проверка и обновление cозданного аккаунта")
     public ResponseEntity<Void> verifyAccountByEmail(@PathVariable("email") String email) {
@@ -54,11 +52,11 @@ public class RegistrationController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        if (u.getVerified()) {
+        if (u.getVerifiedEmail()) {
             return new ResponseEntity<>(HttpStatus.OK);
         }
 
-        u.setVerified(true);
+        u.setVerifiedEmail(true);
         userService.save(u);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -73,15 +71,13 @@ public class RegistrationController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-            String verifyAccountUrl = getVerifyAccountUrl(httpRequest, email);
-            notificationService.sendNotification(user.getEmail(), "Registration Center",
-                    "Your request for registration for the Medical Center has been accepted.\nPlease confirm your registration by visiting the link:\n" + verifyAccountUrl);
+        String verifyAccountUrl = getVerifyAccountUrl(httpRequest, email);
+        notificationService.sendNotification(user.getEmail(), "Registration Center",
+                "Your request for registration for the Medical Center has been accepted.\nPlease confirm your registration by visiting the link:\n" + verifyAccountUrl);
 
-            return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.OK);
 
-        }
-
-
+    }
 
     @DeleteMapping(value = "/denyRegister")
     @ApiOperation("Отмена регистрации")
@@ -90,7 +86,7 @@ public class RegistrationController {
         log.info("Cancellation of registration: '{}'.", email);
         String rejectionReason = denyRegisterDTO.getRejectionReason();
 
-       User user = userService.findByEmail(email);
+        User user = userService.findByEmail(email);
 
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -117,15 +113,14 @@ public class RegistrationController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        if (u.getVerified()) {
+        if (u.getVerifiedPhone()) {
             return new ResponseEntity<>(HttpStatus.OK);
         }
 
-        u.setVerified(true);
+        u.setVerifiedPhone(true);
         userService.save(u);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 
     public String getVerifyAccountUrl(HttpServletRequest httpRequest, String email) {
         String requestURL = httpRequest.getRequestURL().toString();

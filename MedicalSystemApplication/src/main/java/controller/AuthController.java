@@ -50,7 +50,7 @@ public class AuthController {
             return new ResponseEntity<>(header, HttpStatus.NOT_FOUND);
         }
 
-        if (!u.getVerified()) {
+        if (!u.getVerifiedEmail()) {
             return new ResponseEntity<>(header, HttpStatus.UNAUTHORIZED);
         }
 

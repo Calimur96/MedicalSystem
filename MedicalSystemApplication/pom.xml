@@ -64,8 +64,12 @@
 			<artifactId>springfox-swagger-ui</artifactId>
 			<version>3.0.0</version>
 		</dependency>
-		<!--Swagger-UI end-->
 
+		<dependency>
+			<groupId>com.infobip</groupId>
+			<artifactId>infobip-api-java-client</artifactId>
+			<version>3.2.0</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

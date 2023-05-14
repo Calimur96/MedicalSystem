@@ -95,6 +95,7 @@ public class User {
     public User(RegistrationRequestDTO request) {
         this.password = request.getPassword();
         this.email = request.getEmail();
+        this.phone = request.getPhoneNumber();
         this.deleted = false;
 		this.verifiedEmail = false;
 		this.verifiedPhone = false;

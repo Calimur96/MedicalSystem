@@ -3,6 +3,7 @@ package model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import dto.PatientDTO;
+import dto.RegistrationRequestDTO;
 import helpers.UserBuilder;
 import lombok.Data;
 import model.User.UserRole;
@@ -34,7 +35,7 @@ public class Patient extends User {
 		medicalRecord = new MedicalRecord();
 	}
 	
-	public Patient(RegistrationRequest request)
+	public Patient(RegistrationRequestDTO request)
 	{
 		super(request,UserRole.Patient);
 		medicalRecord = new MedicalRecord();
